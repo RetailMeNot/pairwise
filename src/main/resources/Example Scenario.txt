@@ -1,0 +1,3 @@
+Ordinal: first, second, third
+Thing: monkey, chestnut, labrador
+Concept: idea, tragedy, infinity
