@@ -1,7 +1,7 @@
 package com.wsm.pairwise;
 
 import org.junit.Assert;
-import org.testng.annotations.Test;
+import org.junit.Test;
 
 public class MoleculeTests {
 

@@ -5,7 +5,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.junit.Assert;
-import org.testng.annotations.Test;
+import org.junit.Test;
 
 public class TestCaseGeneratorTests {
     private static final String TWO_X_THREE_SET = "Param0: a, b\nParam1: i, j, k";
@@ -33,7 +33,7 @@ public class TestCaseGeneratorTests {
             "Coupon Presentation: Normal, Suggested, Coupon featured on a page with a #cid.<offerid> hash, Modal, Conquested\n" +
             "Click Type: CTR, CTC\n";
 
-    @Test( enabled = true )
+    @Test
     public void testGetBestPair() {
         IInventory inventory = PairwiseInventoryFactory.generateParameterInventory( PARAMETER_SET );
         int[] firstBestPair = inventory.getBestMolecule();
@@ -44,7 +44,7 @@ public class TestCaseGeneratorTests {
         Assert.assertEquals( "j", inventory.getScenario().getParameterValues().get( firstBestPair[1] ) );
     }
 
-    @Test( enabled = true )
+    @Test
     public void testGetParameterOrdering() {
         IInventory inventory = PairwiseInventoryFactory.generateParameterInventory( PARAMETER_SET );
         int[] bestPair = inventory.getBestMolecule();
@@ -55,7 +55,7 @@ public class TestCaseGeneratorTests {
         Assert.assertEquals( 3, ordering[1] );
     }
 
-    @Test( enabled = true )
+    @Test
     public void testBuildTestSets() {
         IInventory inventory = PairwiseInventoryFactory.generateParameterInventory( PARAMETER_SET );
         TestDataSet dataSet = inventory.getTestDataSet();
@@ -70,21 +70,21 @@ public class TestCaseGeneratorTests {
         }
     }
 
-    @Test( enabled = true )
+    @Test
     public void testBuildTinyTestSets() {
         IInventory inventory = PairwiseInventoryFactory.generateParameterInventory( TWO_X_THREE_SET );
         TestDataSet dataSet = inventory.getTestDataSet();
         dataSet.logResults();
     }
 
-    @Test( enabled = true )
+    @Test
     public void testBuild3x3TestSets() {
         IInventory inventory = PairwiseInventoryFactory.generateParameterInventory( THREE_X_THREE_SET );
         TestDataSet dataSet = inventory.getTestDataSet();
         dataSet.logResults();
     }
 
-    @Test( enabled = true )
+    @Test
     public void testBuildBigTestSets() {
         IInventory inventory = PairwiseInventoryFactory.generateParameterInventory( BIG_PARAMETER_SET );
         TestDataSet dataSet = inventory.getTestDataSet();
@@ -93,7 +93,7 @@ public class TestCaseGeneratorTests {
         Assert.assertEquals( "a", dataSet.getTestSets().get( 0 ).get( "Param0" ) );
     }
 
-    @Test( enabled = true )
+    @Test
     public void testBuildOutclickTestSets() {
         IInventory inventory = PairwiseInventoryFactory.generateParameterInventory( OUTCLICK_PARAMETER_SET );
         TestDataSet dataSet = inventory.getTestDataSet();

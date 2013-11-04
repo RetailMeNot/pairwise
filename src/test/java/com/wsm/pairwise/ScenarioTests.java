@@ -3,7 +3,7 @@ package com.wsm.pairwise;
 import java.util.Arrays;
 
 import org.junit.Assert;
-import org.testng.annotations.Test;
+import org.junit.Test;
 
 public class ScenarioTests {
 

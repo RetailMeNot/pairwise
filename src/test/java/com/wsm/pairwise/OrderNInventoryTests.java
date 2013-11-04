@@ -2,9 +2,8 @@ package com.wsm.pairwise;
 
 import org.apache.commons.lang3.StringUtils;
 import org.junit.Assert;
-import org.testng.annotations.Test;
+import org.junit.Test;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -140,7 +139,7 @@ public class OrderNInventoryTests {
         Assert.assertEquals( newList, Arrays.asList( 0, 1, 2, 3, 4, 5 ) );
     }
 
-    @Test( expectedExceptions = { IndexOutOfBoundsException.class } )
+    @Test( expected = IndexOutOfBoundsException.class )
     public void testPurgeValuesOutOfBounds() {
         List<Integer> values = Arrays.asList( 0, 1, 2, 3, 4, 5 );
         OrderNInventory inventory = new OrderNInventory();
@@ -162,7 +161,7 @@ public class OrderNInventoryTests {
         Assert.assertEquals( 2, inventory.getAtomsPerMolecule() );
     }
 
-    @Test( expectedExceptions = IllegalArgumentException.class )
+    @Test( expected = IllegalArgumentException.class )
     public void testSetAtomsPerMoleculeGreaterThanScenario() {
         OrderNInventory inventory = new OrderNInventory();
         inventory.setScenario( PairwiseInventoryFactory.generateScenario( InventoryFactoryTests.BIG_PARAMETER_SET ) );

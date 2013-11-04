@@ -2,7 +2,7 @@ package com.wsm.pairwise;
 
 import org.apache.commons.lang3.StringUtils;
 import org.junit.Assert;
-import org.testng.annotations.Test;
+import org.junit.Test;
 
 public class PairwiseInventoryTests {
 
