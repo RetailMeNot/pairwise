@@ -1,12 +1,12 @@
 package com.rmn.pairwise;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
 import org.apache.commons.lang3.ArrayUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class Scenario<T> {
     private Logger log = LoggerFactory.getLogger( this.getClass() );
@@ -21,7 +21,7 @@ public class Scenario<T> {
     
     /**
      * An array of arrays representing the parameter set (x), and the index of the flattened-out "parameterValues" array (y).
-     * See above for details
+     * See documentation at the top of the PairwiseInventory class for details
      * @return
      */
     public int[][] getLegalValues() { return legalValues; }

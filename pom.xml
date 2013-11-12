@@ -1,7 +1,7 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.whaleshark</groupId>
+    <groupId>com.rmn.qa</groupId>
     <artifactId>pairwise</artifactId>
     <version>1.0.1-SNAPSHOT</version>
     <packaging>jar</packaging>
@@ -93,42 +93,6 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-release-plugin</artifactId>
                 <version>2.3.2</version>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-jar-plugin</artifactId>
-                <version>2.4</version>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>test-jar</goal>
-                        </goals>
-                    </execution>
-                </executions>
-                <configuration>
-                    <archive>
-                        <addMavenDescriptor>false</addMavenDescriptor>
-                        <manifest>
-                            <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
-                            <addClasspath>true</addClasspath>
-                        </manifest>
-                        <manifestEntries>
-                            <Build-Date>${buildDate}</Build-Date>
-                            <!-- Supplied by TeamCity -->
-                            <!--suppress MavenModelInspection -->
-                            <Build-Project>${env.TEAMCITY_PROJECT_NAME}</Build-Project>
-                            <!-- Supplied by TeamCity -->
-                            <!--suppress MavenModelInspection -->
-                            <Build-Configuration>${env.TEAMCITY_BUILDCONF_NAME}</Build-Configuration>
-                            <!-- Supplied by TeamCity -->
-                            <!--suppress MavenModelInspection -->
-                            <Build-Number>${env.BUILD_NUMBER}</Build-Number>
-                            <!-- Supplied by TeamCity -->
-                            <!--suppress MavenModelInspection -->
-                            <Build-SCM-Revision>${env.BUILD_VCS_NUMBER}</Build-SCM-Revision>
-                        </manifestEntries>
-                    </archive>
-                </configuration>
             </plugin>
         </plugins>
     </build>

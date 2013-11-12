@@ -1,11 +1,11 @@
 package com.rmn.pairwise;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Most of the documentation in the methods below will rely on this example for explanation
@@ -67,10 +67,6 @@ public class OrderNInventory implements IInventory {
     private int[] unusedParameterIndexCounts;
     public int[] getUnusedParameterIndexCounts() { return this.unusedParameterIndexCounts; }
     
-    /**
-     * Returns the count of the number of possible combinations that could be generated from this parameter set
-     * @return The number of possible combinations if we had to examine 100%
-     */
     @Override
     public long getFullCombinationCount() {
         long count = 1;
@@ -91,11 +87,6 @@ public class OrderNInventory implements IInventory {
     @Override
     public int getMoleculeCount() { return allMolecules.size(); }
 
-    /**
-     * Determine the number of pairs for this input set
-     *
-     * @return
-     */
     @Override
     public int initMoleculeCount() {
         //recursive version, necessary to handle N atoms per molecule
@@ -222,11 +213,9 @@ public class OrderNInventory implements IInventory {
         return values;
     }
 
-    /**
-     * The molecules that have not been used yet. As they are used, they get removed from this list
-     */
+     // The molecules that have not been used yet. As they are used, they get removed from this list
     private List<Molecule> unusedMolecules = null;
-    
+
     @Override
     public List<Molecule> getUnusedMolecules() { return unusedMolecules; }
 
@@ -309,17 +298,11 @@ public class OrderNInventory implements IInventory {
         this.logUnusedMolecules( this.getUnusedMolecules() );
     }
     
-    /**
-     *  Process the legalValues array to populate the allSets, unusedPairs, and unusedPairsSearch collections
-     */
     @Override
     public void buildMolecules() {
         this.buildMolecules( 2 );
     }
 
-    /**
-     * Process the "used" sets to determine which sets have not been used yet
-     */
     @Override
     public void processUnusedValues() {
         //TODO Needs to be adjusted for Order-N molecules
@@ -366,10 +349,6 @@ public class OrderNInventory implements IInventory {
         } // i
     }
     
-    /**
-     * Pick "best" unused molecule -- the pair with the highest number of unused values
-     * @return
-     */
     @Override
     public int[] getBestMolecule() {
         //TODO Needs to be adjusted for Order-N molecules
@@ -395,13 +374,6 @@ public class OrderNInventory implements IInventory {
         return best;
     }
 
-    /**
-     * Returns the number of unused pairs still outstanding for the given test set (set of parameter indexes). If your test set is [2, 4, 7] as 
-     * in the above example, this will look at molecules [2, 4], [2, 7], and [4, 7], and determine which of those molecules has not been used yet.
-     * In this example the answer would be 0, 1, 2, or 3, depending on how many have not previously been used
-     * @param testSet
-     * @return
-     */
     @Override
     public int numberMoleculesCaptured( int[] testSet ) {
         //TODO Needs to be adjusted for Order-N molecules
@@ -417,11 +389,6 @@ public class OrderNInventory implements IInventory {
         return moleculesCapturedCount;
     }
 
-    /**
-     * Returns the entire set of Test Cases this inventory has produced, by running through "the algorithm" after all the Parameter Sets
-     * have been added
-     * @return
-     */
     @Override
     public TestDataSet getTestDataSet() {
         TestDataSet dataSet = new TestDataSet( this, scenario );

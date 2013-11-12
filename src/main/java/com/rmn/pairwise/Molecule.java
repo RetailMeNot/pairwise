@@ -2,11 +2,11 @@ package com.rmn.pairwise;
 
 /**
  * Represents a single "molecule" of data. Not a test set, not a parameter set, but the smallest "piece" of the scenario you want to test. It 
- * is analagous to a "pair" in the "pairwise" terminology, but I didn't want to be limited to 2 "atoms".
+ * is analagous to a "pair" in the "pairwise" terminology, but I didn't want to be limited to 2 "atoms". Also note that a molecule doesn't
+ * represents the values themselves--it represents the indices of the one-dimensional array the Scenario uses to keep track of ALL atoms
  * @author mmerrell
  */
 public class Molecule {
-    
     public Molecule( int[] atoms ) {
         this.setAtoms( atoms );
     }

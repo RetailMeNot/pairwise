@@ -1,10 +1,10 @@
 package com.rmn.pairwise;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Terms:
@@ -43,10 +43,6 @@ public class PairwiseInventory implements IInventory {
     private int[] unusedParameterIndexCounts;
     public int[] getUnusedParameterIndexCounts() { return this.unusedParameterIndexCounts; }
     
-    /**
-     * Returns the count of the number of possible combinations that could be generated from this parameter set
-     * @return 
-     */
     @Override
     public long getFullCombinationCount() {
         long count = 1;
@@ -67,14 +63,8 @@ public class PairwiseInventory implements IInventory {
     @Override
     public int getMoleculeCount() { return allMolecules.size(); }
     
-    /**
-     * Determine the number of pairs for this input set
-     * @return
-     */
     @Override
     public int initMoleculeCount() {
-        //TODO Needs to be adjusted for Order-N molecules. This can be done now, while we're still using just 2, and will serve
-        // as a model for how the rest of it can be done. It won't get easier than this
         int moleculeCount = 0;
         for ( int i = 0; i < scenario.getLegalValues().length - 1; ++i ) {
             for ( int j = i + 1; j < scenario.getLegalValues().length; ++j ) {
@@ -134,18 +124,11 @@ public class PairwiseInventory implements IInventory {
         this.logUnusedMolecules( this.getUnusedMolecules() );
     }
     
-    /**
-     *  Process the legalValues array to populate the allSets, unusedPairs, and unusedPairsSearch collections
-     * @param inventory 
-     */
     @Override
     public void buildMolecules() {
         this.buildMolecules( 2 );
     }
 
-    /**
-     * Process the "used" sets to determine which sets have not been used yet
-     */
     @Override
     public void processUnusedValues() {
         //TODO Needs to be adjusted for Order-N molecules
@@ -192,10 +175,6 @@ public class PairwiseInventory implements IInventory {
         } // i
     }
     
-    /**
-     * Pick "best" unused molecule -- the pair with the highest number of unused values
-     * @return
-     */
     @Override
     public int[] getBestMolecule() {
         //TODO Needs to be adjusted for Order-N molecules
@@ -221,13 +200,6 @@ public class PairwiseInventory implements IInventory {
         return best;
     }
 
-    /**
-     * Returns the number of unused pairs still outstanding for the given test set (set of parameter indexes). If your test set is [2, 4, 7] as 
-     * in the above example, this will look at molecules [2, 4], [2, 7], and [2, 7], and determine which of those molecules has not been used yet. 
-     * In this example the answer would be 0, 1, 2, or 3, depending on how many have not previously been used
-     * @param testSet
-     * @return
-     */
     @Override
     public int numberMoleculesCaptured( int[] testSet ) {
         //TODO Needs to be adjusted for Order-N molecules
@@ -243,11 +215,6 @@ public class PairwiseInventory implements IInventory {
         return moleculesCapturedCount;
     }
 
-    /**
-     * Returns the entire set of Test Cases this inventory has produced, by running through "the algorithm" after all the Parameter Sets
-     * have been added
-     * @return
-     */
     @Override
     public TestDataSet getTestDataSet() {
         TestDataSet dataSet = new TestDataSet( this, scenario );
