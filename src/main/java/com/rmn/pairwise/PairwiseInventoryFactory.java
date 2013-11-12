@@ -1,4 +1,4 @@
-package com.wsm.pairwise;
+package com.rmn.pairwise;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -14,9 +14,12 @@ import org.slf4j.LoggerFactory;
 public class PairwiseInventoryFactory {
     private static Logger log = LoggerFactory.getLogger( PairwiseInventoryFactory.class );
 
-    //***********************************************************************
-    //Go through the parameter sets to populate the list of ParameterSets we're going to use. These are the raw materials
-    // from which the test cases will be generated
+    /**
+     * Go through the parameter sets to populate the list of ParameterSets we're going to use. These are the raw materials
+     *  from which the test cases will be generated
+     * @param contents The contents of the Scenario you're testing
+     * @return The Scenario, fully populated
+     */
     public static Scenario<String> generateScenario( String contents ) {
         Scenario<String> scenario = new Scenario<String>();
         for ( String line: StringUtils.split( contents, System.getProperty( "line.separator" ) ) ) {
@@ -49,6 +52,11 @@ public class PairwiseInventoryFactory {
         return inventory;
     }
 
+    /**
+     * Processes a single line of inputs
+     * @param line One line, containing one parameter space (e.g. "Title: Value1, Value2, Value3")
+     * @return The ParameterSet representing the line
+     */
     public static ParameterSet<String> processOneLine( String line ) {
         log.debug( "Processing line: " + line );
         String[] lineTokens = line.split( ":", 2 );

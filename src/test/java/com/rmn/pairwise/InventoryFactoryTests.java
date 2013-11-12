@@ -1,4 +1,4 @@
-package com.wsm.pairwise;
+package com.rmn.pairwise;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -7,7 +7,6 @@ import org.junit.Assert;
 import org.junit.Test;
 
 public class InventoryFactoryTests {
-    
     static final String TWO_X_THREE_SET = "Param0: x, y\nParam1: i, j, k";
     static final String PARAMETER_SET = 
             "Param0: a, b\n" +
@@ -38,10 +37,10 @@ public class InventoryFactoryTests {
         Scenario<String> scenario = PairwiseInventoryFactory.generateScenario( line );
         scenario.logParameterValues();
         
-        Assert.assertEquals( 1, scenario.getParameterSetCount() );
-        Assert.assertEquals( 4, scenario.getParameterValuesCount() );
+        Assert.assertEquals( "There should only be one Parameter Set", 1, scenario.getParameterSetCount() );
+        Assert.assertEquals( "There should be 4 values in the whole Parameter Set", 4, scenario.getParameterValuesCount() );
         
-        Assert.assertEquals( "c", scenario.getParameterValues().get( 0 ) );
+        Assert.assertEquals( "The first parameter value in the set should be [c]", "c", scenario.getParameterValues().get( 0 ) );
     }
     
     @Test

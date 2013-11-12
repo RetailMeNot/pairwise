@@ -1,4 +1,4 @@
-package com.wsm.pairwise;
+package com.rmn.pairwise;
 
 import org.apache.commons.lang3.StringUtils;
 import org.junit.Assert;

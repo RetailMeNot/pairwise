@@ -1,4 +1,4 @@
-package com.wsm.pairwise;
+package com.rmn.pairwise;
 
 /**
  * Represents a single "molecule" of data. Not a test set, not a parameter set, but the smallest "piece" of the scenario you want to test. It 

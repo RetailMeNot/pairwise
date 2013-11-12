@@ -1,4 +1,4 @@
-package com.wsm.pairwise;
+package com.rmn.pairwise;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -58,23 +58,27 @@ public class Scenario<T> {
      * we're testing (possible values for User Type would be one Parameter Set, etc)
      * @return
      */
-    public int getParameterSetCount() { return legalValues.length; }
+    public int getParameterSetCount() {
+        return legalValues.length;
+    }
     
     /**
      * The total number of values represented by all Parameter Sets under analysis
      * @return
      */
-    public int getParameterValuesCount() { return parameterValues.size(); }
+    public int getParameterValuesCount() {
+        return parameterValues.size();
+    }
 
     /**
-     * A flattened array representing the parameter set to which this value belongs:
+     * A flattened array representing the parameter set to which this value belongs
+     * @return An array of int, containing the indices of the parameter sets to which this value belongs
      */
     private int[] parameterPositions = null; // The parameter position for a given value
     public int[] getParameterPositions() { return this.parameterPositions; }
 
     /**
      * The parameterPositions field (int[]) represents the "parameter position" for each given value. See above for details
-     * @return
      */
     public void updateParameterPositions() {
         int[] parameterPositions = new int[ this.getParameterValuesCount() ]; // the indexes tell us which parameter set the value belongs to
@@ -90,6 +94,9 @@ public class Scenario<T> {
         this.parameterPositions = parameterPositions;  
     }
 
+    /**
+     * Logs the current Parameter values contained in this Scenario
+     */
     public void logParameterValues() {
         log.debug( "Parameter Values: " + getParameterValues().toString() );
     }

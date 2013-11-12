@@ -1,4 +1,4 @@
-package com.wsm.pairwise;
+package com.rmn.pairwise;
 
 import java.util.ArrayList;
 import java.util.Arrays;
