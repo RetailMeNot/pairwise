@@ -100,17 +100,17 @@ public class OrderNInventoryTests {
         inventory.setAtomsPerMolecule( 3 );
 
         int moleculeSetCount = inventory.initMoleculeCount();
-        Assert.assertEquals( "With the Big Parameter set and an atom size of 3, there should be 420 molecule sets", 105, moleculeSetCount );
+        Assert.assertEquals( "With the Big Parameter set and an atom size of 3, there should be 105 molecule sets", 105, moleculeSetCount );
     }
 
     @Test
     public void testAllPossibleMoleculeCalculation() {
         IInventory inventory = new OrderNInventory();
         inventory.setScenario( PairwiseInventoryFactory.generateScenario( InventoryFactoryTests.TWO_X_THREE_SET ) );
-        Assert.assertEquals("With the 2 x 3 Parameter set, there should be 5040 possible combinations", 6, inventory.getFullCombinationCount());
+        Assert.assertEquals("With the 2 x 3 Parameter set, there should be 6 possible combinations", 6, inventory.getFullCombinationCount());
 
         inventory.setScenario( PairwiseInventoryFactory.generateScenario( InventoryFactoryTests.PARAMETER_SET ) );
-        Assert.assertEquals( "With the normal sized Parameter set, there should be 5040 possible combinations", 48, inventory.getFullCombinationCount() );
+        Assert.assertEquals( "With the normal sized Parameter set, there should be 48 possible combinations", 48, inventory.getFullCombinationCount() );
 
         inventory.setScenario( PairwiseInventoryFactory.generateScenario( InventoryFactoryTests.BIG_PARAMETER_SET ) );
         Assert.assertEquals( "With the Big Parameter set, there should be 5040 possible combinations", 5040, inventory.getFullCombinationCount() );
@@ -128,7 +128,7 @@ public class OrderNInventoryTests {
         List<Integer> values = Arrays.asList( 0, 1, 2, 3, 4, 5, 6, 7 );
         OrderNInventory inventory = new OrderNInventory();
         List<Integer> newList = inventory.purgeValuesFromList( values, new int[] { 4, 6, 0 } );
-        Assert.assertEquals( newList, Arrays.asList( 1, 2, 3, 5, 7 ) );
+        Assert.assertEquals( "After purging values from the list, the new array should contain only the expected elements", newList, Arrays.asList( 1, 2, 3, 5, 7 ) );
     }
 
     @Test
@@ -181,7 +181,7 @@ public class OrderNInventoryTests {
         OrderNInventory inventory = new OrderNInventory();
         inventory.setScenario( PairwiseInventoryFactory.generateScenario( InventoryFactoryTests.TWO_X_THREE_SET ) );
         inventory.setAtomsPerMolecule( 1 );
-        Assert.assertEquals( 2, inventory.getAtomsPerMolecule() );
+        Assert.assertEquals( 1, inventory.getAtomsPerMolecule() );
     }
 
     @Test
@@ -191,6 +191,16 @@ public class OrderNInventoryTests {
         inventory.setAtomsPerMolecule( 2 );
         inventory.initMoleculeCount();
 
-        inventory.buildMolecules2();
+        inventory.buildMolecules();
+    }
+
+    @Test
+    public void testBuildMoleculesThreePerSet() {
+        OrderNInventory inventory = new OrderNInventory();
+        inventory.setScenario( PairwiseInventoryFactory.generateScenario( InventoryFactoryTests.BIG_PARAMETER_SET ) );
+        inventory.setAtomsPerMolecule( 3 );
+        inventory.initMoleculeCount();
+
+        inventory.buildMolecules();
     }
 }

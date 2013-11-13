@@ -31,6 +31,7 @@ public class OrderNInventory implements IInventory {
     /**
      * This will attempt to validate the int received as much as possible before setting the atomsPerMolecule. It defaults
      * to 2 in most cases, but if you specify more Atoms than there are Parameter Sets, it will just throw an exception
+     * If you want ALL possible combinations (i.e. no set reduction), just set this to 1
      * @param atomsPerMolecule The number of desired Atoms per Molecule (the "Order-N" number you're looking for). Defaults to 2, for "pairwise"
      */
     public void setAtomsPerMolecule( int atomsPerMolecule ) {
@@ -39,7 +40,11 @@ public class OrderNInventory implements IInventory {
             this.atomsPerMolecule = 2;
             return;
         }
-        if ( atomsPerMolecule < 2 ) {
+        if ( atomsPerMolecule == 1 ) {
+            //When you want ALL possible combinations, no set reduction
+            this.atomsPerMolecule = 1;
+        }
+        if ( atomsPerMolecule < 1 ) {
             log.error(String.format("Cannot specify fewer than 2 atoms per test molecule (you specified %d). Defaulting to 2", atomsPerMolecule));
             this.atomsPerMolecule = 2;
             return;
@@ -106,7 +111,6 @@ public class OrderNInventory implements IInventory {
     private List<int[]> calculateMoleculeSets() {
         List<int[]> initialSets = getParameterPairCombinations( scenario.getParameterSetCount() );
 
-
         //Start with pairs, combine with one other value at a time (so we're only ever comparing two things)
         return getNewSets( initialSets );
     }
@@ -145,7 +149,7 @@ public class OrderNInventory implements IInventory {
 
     /**
      * Calculates the Parameter Set combinations for this scenario--not the Molecules, but the different ways in which the
-     * Parameter Sets can be combined for the given number of Atoms per Molecule. For the
+     * Parameter Sets can be combined for the given number of Atoms per Molecule
      * @param initialSets
      * @return
      */
@@ -192,6 +196,13 @@ public class OrderNInventory implements IInventory {
         log.info( String.format( "New Set: " + Arrays.toString( newSet ) ) );
     }
 
+    /**
+     * Remove a set of "used" values from the set of all values. Allows us to keep a running tally of what has
+     *  and what hasn't been used
+     * @param allValues The complete list of all value indices
+     * @param set The set of indices to remove from the list
+     * @return
+     */
     protected List<Integer> purgeValuesFromList(List<Integer> allValues, int[] set) {
         //Sort the array so we can remove them from the list in the correct order
         Arrays.sort( set );
@@ -224,45 +235,8 @@ public class OrderNInventory implements IInventory {
     @Override
     public int[][] getUnusedMoleculesSearch() { return unusedMoleculesSearch; };
 
-    public void buildMolecules2() {
-        List<Molecule> allMolecules = new ArrayList<Molecule>();
-        List<Molecule> unusedMolecules = new ArrayList<Molecule>();          // List of pairs which have not yet been captured
-
-        //TODO Needs to be adjusted for Order-N molecules
-        int[][] unusedMoleculesSearch = new int[ scenario.getParameterValuesCount() ][ scenario.getParameterValuesCount() ];
-        for ( int parameterSet = 0; parameterSet < scenario.getLegalValues().length - 1; parameterSet++ ) {
-            for ( int nextParameterValue = parameterSet + 1; nextParameterValue < scenario.getLegalValues().length; nextParameterValue++ ) {
-                int[] firstRow = scenario.getLegalValues()[parameterSet];
-                int[] secondRow = scenario.getLegalValues()[nextParameterValue];
-
-                for ( int x = 0; x < firstRow.length; ++x ) {
-                    for ( int y = 0; y < secondRow.length; ++y ) {
-                        int[] atoms = new int[] { firstRow[x], secondRow[y] };
-                        Molecule molecule = new Molecule( atomsPerMolecule );
-                        molecule.setAtoms( atoms );
-
-                        unusedMolecules.add( molecule );
-                        unusedMoleculesSearch[ firstRow[x] ][ secondRow[y] ] = 1;
-                        allMolecules.add( molecule );
-                        logUnusedMolecules( unusedMolecules );
-                    } // y
-                } // x
-
-            } // j
-        } // i
-
-        scenario.updateParameterPositions();
-        this.allMolecules = allMolecules;
-        this.unusedMolecules = unusedMolecules;
-        this.unusedMoleculesSearch = unusedMoleculesSearch;
-        this.processUnusedValues();
-        this.logAllMolecules( this.getAllMolecules() );
-        this.logUnusedMolecules( this.getUnusedMolecules() );
-    }
-
-    public void buildMolecules( int atomsPerMolecule ) {
-        this.atomsPerMolecule = atomsPerMolecule;
-        
+    @Override
+    public void buildMolecules() {
         List<Molecule> allMolecules = new ArrayList<Molecule>();
         List<Molecule> unusedMolecules = new ArrayList<Molecule>();          // List of pairs which have not yet been captured
         
@@ -298,11 +272,6 @@ public class OrderNInventory implements IInventory {
         this.logUnusedMolecules( this.getUnusedMolecules() );
     }
     
-    @Override
-    public void buildMolecules() {
-        this.buildMolecules( 2 );
-    }
-
     @Override
     public void processUnusedValues() {
         //TODO Needs to be adjusted for Order-N molecules
@@ -406,19 +375,19 @@ public class OrderNInventory implements IInventory {
         }
     }
 
-    protected void logUnusedMolecules( List<Molecule> unusedMolecules ) {
-        //TODO Needs to be adjusted for Order-N molecules
-        String unusedPairsStr = "Unused Molecules: ";
-        int moleculeCount = 0;
-        for ( Molecule molecule: unusedMolecules ) {
-            if ( null != molecule ) {
-                int[] curr = molecule.getAtoms();
-                unusedPairsStr += molecule + ",";
-                log.debug( String.format( "%3d: %2d,  %2d", moleculeCount, curr[0], curr[1] ) );
-            }
-            moleculeCount++;
-        }
-        unusedPairsStr = unusedPairsStr.substring( 0, unusedPairsStr.length() - 1 );
-        log.debug( unusedPairsStr );
-    }
+   protected void logUnusedMolecules( List<Molecule> unusedMolecules ) {
+       //TODO Needs to be adjusted for Order-N molecules
+       String unusedPairsStr = "Unused Molecules: ";
+       int moleculeCount = 0;
+       for ( Molecule molecule: unusedMolecules ) {
+           if ( null != molecule ) {
+               int[] curr = molecule.getAtoms();
+               unusedPairsStr += molecule + ",";
+               log.debug( String.format( "%03d: %2d,  %2d", moleculeCount, curr[0], curr[1] ) );
+           }
+           moleculeCount++;
+       }
+       unusedPairsStr = unusedPairsStr.substring( 0, unusedPairsStr.length() - 1 );
+       log.debug( unusedPairsStr );
+   }
 }
