@@ -25,6 +25,10 @@ public interface IInventory {
      */
     int[] getBestMolecule();
 
+    /**
+     *
+     * @param bestTestSet
+     */
     void updateAllCounts( int[] bestTestSet );
 
     /**
@@ -57,9 +61,9 @@ public interface IInventory {
      */
     long getFullCombinationCount();
 
-    public abstract void setScenario( Scenario<?> scenario );
+    public abstract void setScenario( Scenario scenario );
 
-    Scenario<?> getScenario();
+    Scenario getScenario();
 
     void setAtomsPerMolecule( int atoms );
 }

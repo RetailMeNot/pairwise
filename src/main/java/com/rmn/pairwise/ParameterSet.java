@@ -14,16 +14,16 @@ public class ParameterSet<T> {
     
     private String name;
     public String getName() { return name; }
-    public void setName( String name ) { this.name = name; }
+    public void setName(String name) { this.name = name; }
     
-    public ParameterSet( List<T> values ) {
-        parameterValues.addAll( values );
+    public ParameterSet(List<T> values) {
+        parameterValues.addAll(values);
     }
     
     private List<T> parameterValues = new ArrayList<T>();
     public List<T> getParameterValues() { return parameterValues; }
     
-    public T getValue( int index ) {
-        return parameterValues.get( index );
+    public T getValue(int index) {
+        return parameterValues.get(index);
     }
 }

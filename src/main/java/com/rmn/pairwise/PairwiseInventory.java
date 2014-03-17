@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -34,11 +35,11 @@ public class PairwiseInventory implements IInventory {
 
     //********************************************
     //Parameter Set info and methods
-    private Scenario<?> scenario;
-    public Scenario<?> getScenario() { return scenario; }
+    private Scenario scenario;
+    public Scenario getScenario() { return scenario; }
     
     @Override
-    public void setScenario( Scenario<?> scenario ) { this.scenario = scenario; }
+    public void setScenario(Scenario scenario) { this.scenario = scenario; }
     
     private int[] unusedParameterIndexCounts;
     public int[] getUnusedParameterIndexCounts() { return this.unusedParameterIndexCounts; }
@@ -59,22 +60,22 @@ public class PairwiseInventory implements IInventory {
     
     @Override
     public List<Molecule> getAllMolecules() { return allMolecules; }
-    
+
     @Override
     public int getMoleculeCount() { return allMolecules.size(); }
     
     @Override
     public int initMoleculeCount() {
         int moleculeCount = 0;
-        for ( int i = 0; i < scenario.getLegalValues().length - 1; ++i ) {
-            for ( int j = i + 1; j < scenario.getLegalValues().length; ++j ) {
-                moleculeCount += ( scenario.getLegalValues()[i].length * scenario.getLegalValues()[j].length );
+        for (int i = 0; i < scenario.getLegalValues().length - 1; ++i) {
+            for (int j = i + 1; j < scenario.getLegalValues().length; ++j) {
+                moleculeCount += (scenario.getLegalValues()[i].length * scenario.getLegalValues()[j].length);
             }
         }
-        log.debug( String.format( "Number of molecules: %d", moleculeCount ) );
+        log.debug("Number of molecules: {}", moleculeCount);
         return moleculeCount;
     }
-    
+
     /**
      * The molecules that have not been used yet. As they are used, they get removed from this list
      */
@@ -88,27 +89,26 @@ public class PairwiseInventory implements IInventory {
     @Override
     public int[][] getUnusedMoleculesSearch() { return unusedMoleculesSearch; };
     
-    public void buildMolecules( int atomsPerMolecule ) {
+    public void buildMolecules(int atomsPerMolecule) {
         List<Molecule> allMolecules = new ArrayList<Molecule>();
         List<Molecule> unusedMolecules = new ArrayList<Molecule>();          // List of pairs which have not yet been captured
         
-        //TODO Needs to be adjusted for Order-N molecules
         int[][] unusedMoleculesSearch = new int[ scenario.getParameterValuesCount() ][ scenario.getParameterValuesCount() ];
-        for ( int parameterSet = 0; parameterSet < scenario.getLegalValues().length - 1; parameterSet++ ) {
-            for ( int nextParameterValue = parameterSet + 1; nextParameterValue < scenario.getLegalValues().length; nextParameterValue++ ) {
+        for (int parameterSet = 0; parameterSet < scenario.getLegalValues().length - 1; parameterSet++) {
+            for (int nextParameterValue = parameterSet + 1; nextParameterValue < scenario.getLegalValues().length; nextParameterValue++) {
                 int[] firstRow = scenario.getLegalValues()[parameterSet];
                 int[] secondRow = scenario.getLegalValues()[nextParameterValue];
-                
-                for ( int x = 0; x < firstRow.length; ++x ) {
-                    for ( int y = 0; y < secondRow.length; ++y ) {
-                        int[] atoms = new int[] { firstRow[x], secondRow[y] };
-                        Molecule molecule = new Molecule( atomsPerMolecule );
-                        molecule.setAtoms( atoms );
-                        
-                        unusedMolecules.add( molecule );
-                        unusedMoleculesSearch[ firstRow[x] ][ secondRow[y] ] = 1;
-                        allMolecules.add( molecule );
-                        logUnusedMolecules( unusedMolecules );
+
+                for (int aFirstRow : firstRow) {
+                    for (int aSecondRow : secondRow) {
+                        int[] atoms = new int[]{aFirstRow, aSecondRow};
+                        Molecule molecule = new Molecule(atomsPerMolecule);
+                        molecule.setAtoms(atoms);
+
+                        unusedMolecules.add(molecule);
+                        unusedMoleculesSearch[aFirstRow][aSecondRow] = 1;
+                        allMolecules.add(molecule);
+                        logUnusedMolecules(unusedMolecules);
                     } // y
                 } // x
                 
@@ -120,53 +120,51 @@ public class PairwiseInventory implements IInventory {
         this.unusedMolecules = unusedMolecules;
         this.unusedMoleculesSearch = unusedMoleculesSearch;
         this.processUnusedValues();
-        this.logAllMolecules( this.getAllMolecules() );
-        this.logUnusedMolecules( this.getUnusedMolecules() );
+        this.logAllMolecules(this.getAllMolecules());
+        this.logUnusedMolecules(this.getUnusedMolecules());
     }
     
     @Override
     public void buildMolecules() {
-        this.buildMolecules( 2 );
+        this.buildMolecules(2);
     }
 
     @Override
     public void processUnusedValues() {
-        //TODO Needs to be adjusted for Order-N molecules
         int[] unusedCounts = new int[scenario.getParameterValuesCount()];  // indexes are parameter values, cell values are counts of how many times the parameter value apperas in the analyzer.getUnusedPairs() collection
-        for ( Molecule molecule: this.getAllMolecules() ) {
+        for (Molecule molecule: this.getAllMolecules()) {
             ++unusedCounts[ molecule.getAtoms()[0] ];
             ++unusedCounts[ molecule.getAtoms()[1] ];
         }
         
-        this.logUnusedMolecules( unusedMolecules );
+        this.logUnusedMolecules(unusedMolecules);
         this.unusedParameterIndexCounts = unusedCounts;
     }
     
     @Override
-    public void updateAllCounts( int[] bestTestSet ) {
-        //TODO Needs to be adjusted for Order-N molecules
-        for ( int i = 0; i <= scenario.getParameterSetCount() - 2; ++i ) {
-            for ( int j = i + 1; j <= scenario.getParameterSetCount() - 1; ++j ) {
+    public void updateAllCounts(int[] bestTestSet) {
+        for (int i = 0; i <= scenario.getParameterSetCount() - 2; ++i) {
+            for (int j = i + 1; j <= scenario.getParameterSetCount() - 1; ++j) {
                 int v1 = bestTestSet[i]; // value 1 of newly added pair
                 int v2 = bestTestSet[j]; // value 2 of newly added pair
    
-                log.debug( String.format( "Adjusting the unused counts for [%d][%d]", v1, v2 ) );
+                log.debug("Adjusting the unused counts for [{}][{}]", v1, v2);
                 --unusedParameterIndexCounts[v1];
                 --unusedParameterIndexCounts[v2];
    
-                log.debug( String.format( "Setting getUnusedMoleculesSearch() at [%d][%d] to 0",  v1, v2 ) );
+                log.debug("Setting getUnusedMoleculesSearch() at [{}][{}] to 0", v1, v2);
                 this.getUnusedMoleculesSearch()[v1][v2] = 0;
    
                 //Set up a new list of unused molecules, then assign it back to the unusedMolecules field--otherwise we get a ConcurrentModificationException
                 List<Molecule> tempUnusedMolecules = new ArrayList<Molecule>();
-                tempUnusedMolecules.addAll( this.getUnusedMolecules() );
+                tempUnusedMolecules.addAll(this.getUnusedMolecules());
                 
-                for ( Molecule molecule: this.getUnusedMolecules() ) {
+                for (Molecule molecule: this.getUnusedMolecules()) {
                     int[] curr = molecule.getAtoms();
    
                     //TODO this is a huge performance sink--we should build a map or lookup table and remove the molecules that way
-                    if ( curr[0] == v1 && curr[1] == v2 ) {
-                        log.debug( String.format( "Removing pair [%d, %d] from the Unused Molecole list", v1, v2 ) );
+                    if (curr[0] == v1 && curr[1] == v2) {
+                        log.debug("Removing pair [{}, {}] from the Unused Molecole list", v1, v2);
                         tempUnusedMolecules.remove( molecule );
                     }
                 }
@@ -177,37 +175,33 @@ public class PairwiseInventory implements IInventory {
     
     @Override
     public int[] getBestMolecule() {
-        //TODO Needs to be adjusted for Order-N molecules
-
         //Weight the pair by looping through the unused set
         int bestWeight = 0;
         int indexOfBestMolecule = 0;
-        for ( int unusedMoleculeIndex = 0; unusedMoleculeIndex < this.getUnusedMolecules().size(); unusedMoleculeIndex++ ) {
+        for (int unusedMoleculeIndex = 0; unusedMoleculeIndex < this.getUnusedMolecules().size(); unusedMoleculeIndex++) {
             int[] curr = this.getUnusedMolecules().get( unusedMoleculeIndex ).getAtoms();
             int weight = this.getUnusedParameterIndexCounts()[ curr[0] ] + this.getUnusedParameterIndexCounts()[ curr[1] ];
-            log.debug( String.format( "Pair %d: [%s,%s], Weight: %2d", unusedMoleculeIndex, scenario.getParameterValues().get( curr[0] ), scenario.getParameterValues().get ( curr[1] ), weight ) );
+            log.debug(String.format("Pair %d: [%s,%s], Weight: %2d", unusedMoleculeIndex, scenario.getParameterValues().get(curr[0]), scenario.getParameterValues().get (curr[1]), weight));
             
             //If the new pair is weighted more highly than the previous, make it the new "best"
-            if ( weight > bestWeight ) {
+            if (weight > bestWeight) {
                 bestWeight = weight;
                 indexOfBestMolecule = unusedMoleculeIndex;
             }
         }
          
         //log and return the best pair
-        int[] best = this.getUnusedMolecules().get( indexOfBestMolecule ).getAtoms();
-        log.debug( String.format( "Best pair is [%s, %s] at %d with weight %d", scenario.getParameterValues().get( best[0] ), scenario.getParameterValues().get( best[1] ), indexOfBestMolecule, bestWeight ) );
+        int[] best = this.getUnusedMolecules().get(indexOfBestMolecule).getAtoms();
+        log.debug(String.format("Best pair is [%s, %s] at %d with weight %d", scenario.getParameterValues().get(best[0]), scenario.getParameterValues().get(best[1]), indexOfBestMolecule, bestWeight));
         return best;
     }
 
     @Override
-    public int numberMoleculesCaptured( int[] testSet ) {
-        //TODO Needs to be adjusted for Order-N molecules
-
+    public int numberMoleculesCaptured(int[] testSet) {
         int moleculesCapturedCount = 0;
-        for ( int i = 0; i <= testSet.length - 2; ++i ) {
-            for ( int j = i + 1; j <= testSet.length - 1; ++j ) {
-                if ( unusedMoleculesSearch[ testSet[i] ][ testSet[j] ] == 1 ) {
+        for (int i = 0; i <= testSet.length - 2; ++i) {
+            for (int j = i + 1; j <= testSet.length - 1; ++j) {
+                if (unusedMoleculesSearch[ testSet[i] ][ testSet[j] ] == 1) {
                     ++moleculesCapturedCount;
                 }
             }
@@ -217,38 +211,37 @@ public class PairwiseInventory implements IInventory {
 
     @Override
     public TestDataSet getTestDataSet() {
-        TestDataSet dataSet = new TestDataSet( this, scenario );
+        TestDataSet dataSet = new TestDataSet(this, scenario);
         dataSet.buildTestCases();
         dataSet.logFullCombinationCount();
         return dataSet;
     }
 
-   protected void logAllMolecules( List<Molecule> allMolecules ) {
-        log.debug( "All Molecules:" );
+   protected void logAllMolecules(List<Molecule> allMolecules) {
+        log.debug("All Molecules:");
         int moleculeCount = 0;
-        for ( Molecule molecule: allMolecules ) {
-            log.debug( String.format( "%03d: %s", moleculeCount, molecule.getAtoms().toString() ) );
+        for (Molecule molecule: allMolecules) {
+            log.debug( String.format("%03d: %s", moleculeCount, Arrays.toString(molecule.getAtoms())));
             moleculeCount++;
         }
     }
     
-    protected void logUnusedMolecules( List<Molecule> unusedMolecules ) {
-        //TODO Needs to be adjusted for Order-N molecules
+    protected void logUnusedMolecules(List<Molecule> unusedMolecules) {
         String unusedPairsStr = "Unused Molecules: ";
         int moleculeCount = 0;
-        for ( Molecule molecule: unusedMolecules ) {
-            if ( null != molecule ) {
+        for (Molecule molecule: unusedMolecules) {
+            if (null != molecule) {
                 int[] curr = molecule.getAtoms();
                 unusedPairsStr += molecule + ",";
-                log.debug( String.format( "%3d: %2d,  %2d", moleculeCount, curr[0], curr[1] ) );
+                log.debug(String.format("%3d: %2d,  %2d", moleculeCount, curr[0], curr[1]));
             }
             moleculeCount++;
         }
         unusedPairsStr = unusedPairsStr.substring( 0, unusedPairsStr.length() - 1 );
-        log.debug( unusedPairsStr );
+        log.debug(unusedPairsStr);
     }
 
-    public void setAtomsPerMolecule ( int atoms ) {
-        log.warn( "This feature not available in a strictly pairwise environment--atoms will be set to 2" );
+    public void setAtomsPerMolecule (int atoms) {
+        log.warn("This feature not available in a strictly pairwise environment--atoms will be set to 2");
     }
 }

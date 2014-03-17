@@ -4,18 +4,20 @@ import org.apache.commons.lang3.ArrayUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
-public class Scenario<T> {
-    private Logger log = LoggerFactory.getLogger( this.getClass() );
+public class Scenario {
+    private Logger log = LoggerFactory.getLogger(this.getClass());
 
-    private List<ParameterSet<T>> parameterSets = new ArrayList<ParameterSet<T>>();
-    public List<ParameterSet<T>> getParameterSets() { return parameterSets; }
-    public ParameterSet<T> getParameterSet( int index ) {
-        return getParameterSets().get( index );
+    private List<ParameterSet<?>> parameterSets = new ArrayList<ParameterSet<?>>();
+    public List<ParameterSet<?>> getParameterSets() { return parameterSets; }
+    public ParameterSet<?> getParameterSet(int index) {
+        return getParameterSets().get(index);
     }
+
+    private IModelConstraint modelConstraints;
+    public IModelConstraint getModelConstraints() { return modelConstraints; }
+    public void setModelConstraints(IModelConstraint modelConstraints) { this.modelConstraints = modelConstraints; }
 
     private int[][] legalValues;
     
@@ -26,28 +28,28 @@ public class Scenario<T> {
      */
     public int[][] getLegalValues() { return legalValues; }
     
-    public void addParameterSet( ParameterSet<T> parameterSet ) {
-        parameterSets.add( parameterSet );
+    public void addParameterSet(ParameterSet<?> parameterSet) {
+        parameterSets.add(parameterSet);
         int[] parameterValueIndexes = new int[ parameterSet.getParameterValues().size() ];
 
         //Rebuild the various metadata arrays each time (since we'll never know from here whether or not we're "done"--they can keep adding Parameter Sets)
-        updateLegalValues( parameterSet, parameterValueIndexes );
-        updateParameterValues( parameterSet );
+        updateLegalValues(parameterSet, parameterValueIndexes);
+        updateParameterValues(parameterSet);
         updateParameterPositions();
     }
     
     /**
      * A flattened array representing the values of all the parameters in the set
      */
-    private List<T> parameterValues = new ArrayList<T>();
-    public List<T> getParameterValues() { return parameterValues; }
+    private List<?> parameterValues = new ArrayList();
+    public List<?> getParameterValues() { return parameterValues; }
 
-    protected void updateParameterValues( ParameterSet<T> parameterSet ) {
-        parameterValues.addAll( parameterSet.getParameterValues() );
+    protected void updateParameterValues(ParameterSet<?> parameterSet) {
+        parameterValues.addAll((Collection)parameterSet.getParameterValues());
     }
 
-    protected void updateLegalValues( ParameterSet<?> parameterSet, int[] parameterValueIndexes ) {
-        for ( int i=0, j = getParameterValuesCount(); j < getParameterValuesCount() + parameterSet.getParameterValues().size(); i++, j++ ) {
+    protected void updateLegalValues(ParameterSet<?> parameterSet, int[] parameterValueIndexes) {
+        for (int i=0, j = getParameterValuesCount(); j < getParameterValuesCount() + parameterSet.getParameterValues().size(); i++, j++) {
             parameterValueIndexes[i] = j;
         }
         legalValues = ArrayUtils.addAll( legalValues, parameterValueIndexes );
@@ -86,11 +88,11 @@ public class Scenario<T> {
         int k = 0; //The index of the parameter set attached to this value
         for ( int i = 0; i < this.getLegalValues().length; ++i ) {
             int[] curr = this.getLegalValues()[i];
-            for ( int j = 0; j < curr.length; ++j ) {
+            for (int j = 0; j < curr.length; ++j) {
                 parameterPositions[k++] = i;
             }
         }
-        log.debug( "Parameter Positions: " + Arrays.toString( parameterPositions ) );
+        log.debug("Parameter Positions: {}", Arrays.toString(parameterPositions));
         this.parameterPositions = parameterPositions;  
     }
 
@@ -98,6 +100,6 @@ public class Scenario<T> {
      * Logs the current Parameter values contained in this Scenario
      */
     public void logParameterValues() {
-        log.debug( "Parameter Values: " + getParameterValues().toString() );
+        log.debug("Parameter Values: {}", getParameterValues().toString());
     }
  }

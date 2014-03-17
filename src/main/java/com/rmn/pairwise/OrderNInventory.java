@@ -34,24 +34,24 @@ public class OrderNInventory implements IInventory {
      * If you want ALL possible combinations (i.e. no set reduction), just set this to 1
      * @param atomsPerMolecule The number of desired Atoms per Molecule (the "Order-N" number you're looking for). Defaults to 2, for "pairwise"
      */
-    public void setAtomsPerMolecule( int atomsPerMolecule ) {
-        if ( null == scenario ) {
-            log.error( "The scenario has not yet been specified. Defaulting to 2" );
+    public void setAtomsPerMolecule(int atomsPerMolecule) {
+        if (null == scenario) {
+            log.error("The scenario has not yet been specified. Defaulting to 2");
             this.atomsPerMolecule = 2;
             return;
         }
-        if ( atomsPerMolecule == 1 ) {
+        if (atomsPerMolecule == 1) {
             //When you want ALL possible combinations, no set reduction
             this.atomsPerMolecule = 1;
         }
-        if ( atomsPerMolecule < 1 ) {
-            log.error(String.format("Cannot specify fewer than 2 atoms per test molecule (you specified %d). Defaulting to 2", atomsPerMolecule));
+        if (atomsPerMolecule < 1) {
+            log.error("Cannot specify fewer than 2 atoms per test molecule (you specified {}). Defaulting to 2", atomsPerMolecule);
             this.atomsPerMolecule = 2;
             return;
         }
 
         if ( atomsPerMolecule > scenario.getParameterSetCount() ) {
-            throw new IllegalArgumentException( String.format( "Cannot specify more than %d atoms per test molecule. You cannot have more atoms than there are parameter sets!", scenario.getParameterSetCount() ) );
+            throw new IllegalArgumentException(String.format("Cannot specify more than %d atoms per test molecule. You cannot have more atoms than there are parameter sets!", scenario.getParameterSetCount()));
         }
         this.atomsPerMolecule = atomsPerMolecule;
     }
@@ -65,9 +65,9 @@ public class OrderNInventory implements IInventory {
 
     //********************************************
     //Scenario info and methods
-    private Scenario<?> scenario;
-    public Scenario<?> getScenario() { return scenario; }
-    public void setScenario( Scenario<?> scenario ) { this.scenario = scenario; }
+    private Scenario scenario;
+    public Scenario getScenario() { return scenario; }
+    public void setScenario(Scenario scenario) { this.scenario = scenario; }
     
     private int[] unusedParameterIndexCounts;
     public int[] getUnusedParameterIndexCounts() { return this.unusedParameterIndexCounts; }
@@ -76,7 +76,7 @@ public class OrderNInventory implements IInventory {
     public long getFullCombinationCount() {
         long count = 1;
         //Just multiply out all the parameters, X * Y * Z
-        for ( ParameterSet<?> set: scenario.getParameterSets() ) {
+        for (ParameterSet<?> set: scenario.getParameterSets()) {
             count *= set.getParameterValues().size();
         }
         return count;
@@ -109,10 +109,10 @@ public class OrderNInventory implements IInventory {
      * @return
      */
     private List<int[]> calculateMoleculeSets() {
-        List<int[]> initialSets = getParameterPairCombinations( scenario.getParameterSetCount() );
+        List<int[]> initialSets = getParameterPairCombinations(scenario.getParameterSetCount());
 
         //Start with pairs, combine with one other value at a time (so we're only ever comparing two things)
-        return getNewSets( initialSets );
+        return getNewSets(initialSets);
     }
 
     /**
@@ -121,17 +121,17 @@ public class OrderNInventory implements IInventory {
      * @param parameterIndexes The number of Parameter Sets there are
      * @return A list of tuples--all possible ways in which 2 Parameter Sets can interact
      */
-    private List<int[]> getParameterPairCombinations( int parameterIndexes ) {
+    private List<int[]> getParameterPairCombinations(int parameterIndexes) {
         //seed pairs first, then send to the grinder
         List<int[]> initialSets = new ArrayList<int[]>();
-        for ( int firstIndex = 0; firstIndex < parameterIndexes - 1; firstIndex++ ) {
-            for ( int secondIndex = firstIndex + 1; secondIndex < parameterIndexes; secondIndex++ ) {
+        for (int firstIndex = 0; firstIndex < parameterIndexes - 1; firstIndex++) {
+            for (int secondIndex = firstIndex + 1; secondIndex < parameterIndexes; secondIndex++) {
                 int[] pair = { firstIndex, secondIndex };
-                initialSets.add( pair );
-                log.info( String.format( "[%d %d]", pair[0], pair[1] ) );
+                initialSets.add(pair);
+                log.info("[{} {}]", pair[0], pair[1]);
             }
         }
-        log.info( String.format( "%d pairs total", initialSets.size() ) );
+        log.info("{} pairs total", initialSets.size());
         return initialSets;
     }
 
@@ -141,8 +141,8 @@ public class OrderNInventory implements IInventory {
     public List<Integer> getParameterIndexList() {
         //Initialize the "master" list of integers (basically just 0 .. parameterSetCount)
         List<Integer> allValues = new ArrayList<Integer>();
-        for ( int index = 0; index < scenario.getParameterSetCount(); index++ ) {
-            allValues.add( index );
+        for (int index = 0; index < scenario.getParameterSetCount(); index++) {
+            allValues.add(index);
         }
         return allValues;
     }
@@ -153,35 +153,35 @@ public class OrderNInventory implements IInventory {
      * @param initialSets
      * @return
      */
-    protected List<int[]> getNewSets( List<int[]> initialSets ) {
+    protected List<int[]> getNewSets(List<int[]> initialSets) {
         //I don't like calling this more than once per run, but this cleans up the getNewSets method signature, and is only called once per
         // Parameter Set, in theory
         List<Integer> allValues = getParameterIndexList();
 
         //Evaluate whether or not we need to call into here again. If we do, figure out what values need to be sent, then send it
         // If we don't need to call again, commence The Algorithm
-        if ( initialSets.get( 0 ).length == atomsPerMolecule ) {
+        if (initialSets.get(0).length == atomsPerMolecule) {
             log.info( "The size of the sets we're looking at is equal to the number of atoms per molecule" );
             return initialSets;
         }
-        log.info( String.format( "Set size: %d, atoms per molecule: %d. Now going to work on sets with size %d", initialSets.get( 0 ).length, atomsPerMolecule, initialSets.get( 0 ).length + 1 ) );
+        log.info(String.format("Set size: %d, atoms per molecule: %d. Now going to work on sets with size %d", initialSets.get(0).length, atomsPerMolecule, initialSets.get(0).length + 1));
 
         //The Algorithm
         // Take the initial Molecule Set given, and for each set, generate all combinations of that set with *one* other Parameter Set index
         List<int[]> newSets = new ArrayList<int[]>();
-        for ( int[] set: initialSets ) {
+        for (int[] set: initialSets) {
             //remove the values from the set under test
             List<Integer> values = purgeValuesFromList(allValues, set);
 
             //Now, step through the remaining "unused" values, and create a new set (the set under test plus the value we're currently "studying")
-            for ( int value: values ) {
+            for (int value: values) {
                 extractNewSet(newSets, set, value);
             }
         }
 
-        if ( newSets.get( 0 ).length < atomsPerMolecule ) {
-            log.info( String.format( "Just finished sets with size %d. Now working on size %d", newSets.get( 0 ).length, newSets.get( 0 ).length + 1 ) );
-            return getNewSets( newSets );
+        if (newSets.get( 0 ).length < atomsPerMolecule) {
+            log.info("Just finished sets with size {}. Now working on size {}", newSets.get(0).length, newSets.get(0).length + 1);
+            return getNewSets(newSets);
         }
 
         return newSets;
@@ -192,8 +192,8 @@ public class OrderNInventory implements IInventory {
         int[] newSet = new int[set.length + 1];
         System.arraycopy(set, 0, newSet, 0, set.length);
         newSet[set.length] = value;
-        newSets.add( newSet );
-        log.info( String.format( "New Set: " + Arrays.toString( newSet ) ) );
+        newSets.add(newSet);
+        log.info("New Set: {}", Arrays.toString(newSet));
     }
 
     /**
@@ -205,22 +205,22 @@ public class OrderNInventory implements IInventory {
      */
     protected List<Integer> purgeValuesFromList(List<Integer> allValues, int[] set) {
         //Sort the array so we can remove them from the list in the correct order
-        Arrays.sort( set );
+        Arrays.sort(set);
 
         List<Integer> values = new ArrayList<Integer>();
-        values.addAll( allValues );
+        values.addAll(allValues);
 
-        log.info(String.format( String.format( "Before we remove the values: values: [%s], set: [%s]",  values.toString(), Arrays.toString(set) ) ) );
-        for ( int singleValue = set.length - 1; singleValue >= 0; singleValue-- ) {
-            if ( set[singleValue] >= values.size() ) {
-                log.error( "Somehow, I've been asked to remove a value from the Parameter Set indexes which is out of bounds--this should not be possible" );
-                log.error( String.format( "Value: %d, Values Array Size: %d", set[singleValue], values.size() ) );
-                throw new IndexOutOfBoundsException( String.format( "Value: %d, Values Array Size: %d", set[singleValue], values.size() ) );
+        log.info("Before we remove the values: values: [{}], set: [{}]", values.toString(), Arrays.toString(set));
+        for (int singleValue = set.length - 1; singleValue >= 0; singleValue--) {
+            if (set[singleValue] >= values.size()) {
+                log.error("Somehow, I've been asked to remove a value from the Parameter Set indexes which is out of bounds--this should not be possible" );
+                log.error("Value: {}, Values Array Size: {}", set[singleValue], values.size());
+                throw new IndexOutOfBoundsException(String.format("Value: %d, Values Array Size: %d", set[singleValue], values.size()));
             }
-            values.remove( set[singleValue] );
-            log.info(String.format( String.format( "Removing value [%d: %d] from allValues, leaving [%s]",  singleValue, set[singleValue], values.toString() ) ) );
+            values.remove(set[singleValue] );
+            log.info(String.format("Removing value [%d: %d] from allValues, leaving [%s]", singleValue, set[singleValue], values.toString()));
         }
-        log.info( String.format( "Values array has been set: %s", values.toString() ) );
+        log.info("Values array has been set: {}", values.toString());
         return values;
     }
 
@@ -242,21 +242,21 @@ public class OrderNInventory implements IInventory {
         
         //TODO Needs to be adjusted for Order-N molecules
         int[][] unusedMoleculesSearch = new int[ scenario.getParameterValuesCount() ][ scenario.getParameterValuesCount() ];
-        for ( int parameterSet = 0; parameterSet < scenario.getLegalValues().length - 1; parameterSet++ ) {
-            for ( int nextParameterValue = parameterSet + 1; nextParameterValue < scenario.getLegalValues().length; nextParameterValue++ ) {
+        for (int parameterSet = 0; parameterSet < scenario.getLegalValues().length - 1; parameterSet++) {
+            for (int nextParameterValue = parameterSet + 1; nextParameterValue < scenario.getLegalValues().length; nextParameterValue++) {
                 int[] firstRow = scenario.getLegalValues()[parameterSet];
                 int[] secondRow = scenario.getLegalValues()[nextParameterValue];
-                
-                for ( int x = 0; x < firstRow.length; ++x ) {
-                    for ( int y = 0; y < secondRow.length; ++y ) {
-                        int[] atoms = new int[] { firstRow[x], secondRow[y] };
-                        Molecule molecule = new Molecule( atomsPerMolecule );
-                        molecule.setAtoms( atoms );
-                        
-                        unusedMolecules.add( molecule );
-                        unusedMoleculesSearch[ firstRow[x] ][ secondRow[y] ] = 1;
-                        allMolecules.add( molecule );
-                        logUnusedMolecules( unusedMolecules );
+
+                for (int aFirstRow : firstRow) {
+                    for (int aSecondRow : secondRow) {
+                        int[] atoms = new int[]{aFirstRow, aSecondRow};
+                        Molecule molecule = new Molecule(atomsPerMolecule);
+                        molecule.setAtoms(atoms);
+
+                        unusedMolecules.add(molecule);
+                        unusedMoleculesSearch[aFirstRow][aSecondRow] = 1;
+                        allMolecules.add(molecule);
+                        logUnusedMolecules(unusedMolecules);
                     } // y
                 } // x
                 
@@ -276,24 +276,24 @@ public class OrderNInventory implements IInventory {
     public void processUnusedValues() {
         //TODO Needs to be adjusted for Order-N molecules
         int[] unusedCounts = new int[scenario.getParameterValuesCount()];  // indexes are parameter values, cell values are counts of how many times the parameter value apperas in the analyzer.getUnusedPairs() collection
-        for ( Molecule molecule: this.getAllMolecules() ) {
+        for (Molecule molecule: this.getAllMolecules()) {
             ++unusedCounts[ molecule.getAtoms()[0] ];
             ++unusedCounts[ molecule.getAtoms()[1] ];
         }
         
-        this.logUnusedMolecules( unusedMolecules );
+        this.logUnusedMolecules(unusedMolecules);
         this.unusedParameterIndexCounts = unusedCounts;
     }
     
     @Override
     public void updateAllCounts( int[] bestTestSet ) {
         //TODO Needs to be adjusted for Order-N molecules
-        for ( int i = 0; i <= scenario.getParameterSetCount() - 2; ++i ) {
-            for ( int j = i + 1; j <= scenario.getParameterSetCount() - 1; ++j ) {
+        for (int i = 0; i <= scenario.getParameterSetCount() - 2; ++i) {
+            for (int j = i + 1; j <= scenario.getParameterSetCount() - 1; ++j) {
                 int v1 = bestTestSet[i]; // value 1 of newly added pair
                 int v2 = bestTestSet[j]; // value 2 of newly added pair
    
-                log.debug( String.format( "Adjusting the unused counts for [%d][%d]", v1, v2 ) );
+                log.debug("Adjusting the unused counts for [{}][{}]", v1, v2);
                 --unusedParameterIndexCounts[v1];
                 --unusedParameterIndexCounts[v2];
    
@@ -302,15 +302,15 @@ public class OrderNInventory implements IInventory {
    
                 //Set up a new list of unused molecules, then assign it back to the unusedMolecules field--otherwise we get a ConcurrentModificationException
                 List<Molecule> tempUnusedMolecules = new ArrayList<Molecule>();
-                tempUnusedMolecules.addAll( this.getUnusedMolecules() );
+                tempUnusedMolecules.addAll(this.getUnusedMolecules());
                 
-                for ( Molecule molecule: this.getUnusedMolecules() ) {
+                for (Molecule molecule: this.getUnusedMolecules()) {
                     int[] curr = molecule.getAtoms();
    
                     //TODO this is a huge performance sink--we should build a map or lookup table and remove the molecules that way
-                    if ( curr[0] == v1 && curr[1] == v2 ) {
-                        log.debug( String.format( "Removing pair [%d, %d] from the Unused Molecole list", v1, v2 ) );
-                        tempUnusedMolecules.remove( molecule );
+                    if (curr[0] == v1 && curr[1] == v2) {
+                        log.debug("Removing pair [{}, {}] from the Unused Molecole list", v1, v2);
+                        tempUnusedMolecules.remove(molecule);
                     }
                 }
                 this.unusedMolecules = tempUnusedMolecules;
@@ -325,13 +325,13 @@ public class OrderNInventory implements IInventory {
         //Weight the pair by looping through the unused set
         int bestWeight = 0;
         int indexOfBestMolecule = 0;
-        for ( int unusedMoleculeIndex = 0; unusedMoleculeIndex < this.getUnusedMolecules().size(); unusedMoleculeIndex++ ) {
+        for (int unusedMoleculeIndex = 0; unusedMoleculeIndex < this.getUnusedMolecules().size(); unusedMoleculeIndex++) {
             int[] curr = this.getUnusedMolecules().get( unusedMoleculeIndex ).getAtoms();
             int weight = this.getUnusedParameterIndexCounts()[ curr[0] ] + this.getUnusedParameterIndexCounts()[ curr[1] ];
-            log.debug( String.format( "Pair %d: [%s,%s], Weight: %2d", unusedMoleculeIndex, scenario.getParameterValues().get( curr[0] ), scenario.getParameterValues().get ( curr[1] ), weight ) );
+            log.debug(String.format("Pair %d: [%s,%s], Weight: %2d", unusedMoleculeIndex, scenario.getParameterValues().get(curr[0]), scenario.getParameterValues().get (curr[1]), weight));
             
             //If the new pair is weighted more highly than the previous, make it the new "best"
-            if ( weight > bestWeight ) {
+            if (weight > bestWeight) {
                 bestWeight = weight;
                 indexOfBestMolecule = unusedMoleculeIndex;
             }
@@ -339,7 +339,7 @@ public class OrderNInventory implements IInventory {
          
         //log and return the best pair
         int[] best = this.getUnusedMolecules().get( indexOfBestMolecule ).getAtoms();
-        log.debug( String.format( "Best pair is [%s, %s] at %d with weight %d", scenario.getParameterValues().get( best[0] ), scenario.getParameterValues().get( best[1] ), indexOfBestMolecule, bestWeight ) );
+        log.debug(String.format("Best pair is [%s, %s] at %d with weight %d", scenario.getParameterValues().get(best[0]), scenario.getParameterValues().get(best[1]), indexOfBestMolecule, bestWeight));
         return best;
     }
 
@@ -348,9 +348,9 @@ public class OrderNInventory implements IInventory {
         //TODO Needs to be adjusted for Order-N molecules
 
         int moleculesCapturedCount = 0;
-        for ( int i = 0; i <= testSet.length - 2; ++i ) {
-            for ( int j = i + 1; j <= testSet.length - 1; ++j ) {
-                if ( unusedMoleculesSearch[ testSet[i] ][ testSet[j] ] == 1 ) {
+        for (int i = 0; i <= testSet.length - 2; ++i) {
+            for (int j = i + 1; j <= testSet.length - 1; ++j) {
+                if (unusedMoleculesSearch[ testSet[i] ][ testSet[j] ] == 1) {
                     ++moleculesCapturedCount;
                 }
             }
@@ -360,17 +360,17 @@ public class OrderNInventory implements IInventory {
 
     @Override
     public TestDataSet getTestDataSet() {
-        TestDataSet dataSet = new TestDataSet( this, scenario );
+        TestDataSet dataSet = new TestDataSet(this, scenario);
         dataSet.buildTestCases();
         dataSet.logFullCombinationCount();
         return dataSet;
     }
 
-   protected void logAllMolecules( List<Molecule> allMolecules ) {
-        log.debug( "All Molecules:" );
+   protected void logAllMolecules(List<Molecule> allMolecules) {
+        log.debug("All Molecules:");
         int moleculeCount = 0;
-        for ( Molecule molecule: allMolecules ) {
-            log.debug( String.format( "%03d: %s", moleculeCount, molecule.getAtoms().toString() ) );
+        for (Molecule molecule: allMolecules) {
+            log.debug(String.format("%03d: %s", moleculeCount, Arrays.toString(molecule.getAtoms())));
             moleculeCount++;
         }
     }
@@ -379,15 +379,15 @@ public class OrderNInventory implements IInventory {
        //TODO Needs to be adjusted for Order-N molecules
        String unusedPairsStr = "Unused Molecules: ";
        int moleculeCount = 0;
-       for ( Molecule molecule: unusedMolecules ) {
-           if ( null != molecule ) {
+       for (Molecule molecule: unusedMolecules) {
+           if (null != molecule) {
                int[] curr = molecule.getAtoms();
                unusedPairsStr += molecule + ",";
-               log.debug( String.format( "%03d: %2d,  %2d", moleculeCount, curr[0], curr[1] ) );
+               log.debug(String.format( "%03d: %2d,  %2d", moleculeCount, curr[0], curr[1]));
            }
            moleculeCount++;
        }
-       unusedPairsStr = unusedPairsStr.substring( 0, unusedPairsStr.length() - 1 );
-       log.debug( unusedPairsStr );
+       unusedPairsStr = unusedPairsStr.substring(0, unusedPairsStr.length() - 1);
+       log.debug(unusedPairsStr);
    }
 }
