@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -132,6 +133,7 @@ public class OrderNInventory implements IInventory {
             }
         }
         log.info("{} pairs total", initialSets.size());
+        Collections.shuffle(initialSets);
         return initialSets;
     }
 
@@ -297,7 +299,7 @@ public class OrderNInventory implements IInventory {
                 --unusedParameterIndexCounts[v1];
                 --unusedParameterIndexCounts[v2];
    
-                log.debug( String.format( "Setting getUnusedMoleculesSearch() at [%d][%d] to 0",  v1, v2 ) );
+                log.debug("Setting getUnusedMoleculesSearch() at [{}][{}] to 0",  v1, v2);
                 this.getUnusedMoleculesSearch()[v1][v2] = 0;
    
                 //Set up a new list of unused molecules, then assign it back to the unusedMolecules field--otherwise we get a ConcurrentModificationException
@@ -309,7 +311,7 @@ public class OrderNInventory implements IInventory {
    
                     //TODO this is a huge performance sink--we should build a map or lookup table and remove the molecules that way
                     if (curr[0] == v1 && curr[1] == v2) {
-                        log.debug("Removing pair [{}, {}] from the Unused Molecole list", v1, v2);
+                        log.debug("Removing pair [{}, {}] from the Unused Molecule list", v1, v2);
                         tempUnusedMolecules.remove(molecule);
                     }
                 }

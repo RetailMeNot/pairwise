@@ -11,7 +11,6 @@ import java.util.List;
  * @param <T>
  */
 public class ParameterSet<T> {
-    
     private String name;
     public String getName() { return name; }
     public void setName(String name) { this.name = name; }

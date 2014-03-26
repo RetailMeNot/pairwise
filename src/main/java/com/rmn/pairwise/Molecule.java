@@ -11,45 +11,45 @@ public class Molecule {
      * Initializes a new Molecule, which has an array of indexes to the "larger" scenario
      * @param atoms
      */
-    public Molecule( int[] atoms ) {
-        this.setAtoms( atoms );
+    public Molecule(int[] atoms) {
+        this.setAtoms(atoms);
     }
 
     /**
      * Initialize a Molecule without the set of atomic indexes, but with at least an idea of how many atoms there will be per Molecule
      * @param atomsPerMolecule
      */
-    public Molecule( int atomsPerMolecule ) {
-        this.setAtomsPerMolecule( atomsPerMolecule );
+    public Molecule(int atomsPerMolecule) {
+        this.setAtomsPerMolecule(atomsPerMolecule);
     }
 
     private int atomsPerMolecule;
     public int getAtomsPerMolecule() { return atomsPerMolecule; }
-    public void setAtomsPerMolecule( int atomsPerMolecule ) { this.atomsPerMolecule = atomsPerMolecule; }
+    public void setAtomsPerMolecule(int atomsPerMolecule) { this.atomsPerMolecule = atomsPerMolecule; }
 
     private int[] atoms;
     public int[] getAtoms() { return atoms; }
-    public void setAtoms( int[] atoms ) { 
+    public void setAtoms(int[] atoms) {
         this.atoms = atoms;
-        if ( null != atoms ) {
-            this.setAtomsPerMolecule( atoms.length );
+        if (null != atoms) {
+            this.setAtomsPerMolecule(atoms.length);
         }
     }
     
     private boolean used = false;
     public boolean isUsed() { return used; }
-    public void setUsed( boolean used ) { this.used = used; }
+    public void setUsed(boolean used) { this.used = used; }
     
     private boolean illegal = false;
     public boolean isIllegal() { return illegal; }
-    public void setIllegal( boolean illegal ) { this.illegal = illegal; }
+    public void setIllegal(boolean illegal) { this.illegal = illegal; }
     
     @Override
-    public boolean equals( Object o ) {
+    public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        Molecule that = ( Molecule ) o;
+        Molecule that = (Molecule) o;
 
         if (atoms != null ? !atoms.equals(that.getAtoms()) : that.getAtoms() != null) return false;
 

@@ -17,7 +17,7 @@ public interface IInventory {
      * @param testSet
      * @return
      */
-    int numberMoleculesCaptured( int[] testSet );
+    int numberMoleculesCaptured(int[] testSet);
 
     /**
      * Pick "best" unused molecule -- the pair with the highest number of unused values
@@ -29,7 +29,7 @@ public interface IInventory {
      *
      * @param bestTestSet
      */
-    void updateAllCounts( int[] bestTestSet );
+    void updateAllCounts(int[] bestTestSet);
 
     /**
      * Process the "used" sets to determine which sets have not been used yet
@@ -61,9 +61,9 @@ public interface IInventory {
      */
     long getFullCombinationCount();
 
-    public abstract void setScenario( Scenario scenario );
+    public abstract void setScenario(Scenario scenario);
 
     Scenario getScenario();
 
-    void setAtomsPerMolecule( int atoms );
+    void setAtomsPerMolecule(int atoms);
 }

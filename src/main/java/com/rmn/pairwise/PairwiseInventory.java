@@ -164,7 +164,7 @@ public class PairwiseInventory implements IInventory {
    
                     //TODO this is a huge performance sink--we should build a map or lookup table and remove the molecules that way
                     if (curr[0] == v1 && curr[1] == v2) {
-                        log.debug("Removing pair [{}, {}] from the Unused Molecole list", v1, v2);
+                        log.debug("Removing pair [{}, {}] from the Unused Molecule list", v1, v2);
                         tempUnusedMolecules.remove( molecule );
                     }
                 }

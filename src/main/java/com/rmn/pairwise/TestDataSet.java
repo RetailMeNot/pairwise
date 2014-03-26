@@ -165,7 +165,7 @@ public class TestDataSet {
         log.debug( "Candidate Test Molecules: " );
         for (int i = 0; i < candidateSets.length; ++i) {
             int[] curr = candidateSets[i];
-            log.debug(String.format(" Parameter Set %d: Current: %s, Captures: %d", i, Arrays.toString( curr ), inventory.numberMoleculesCaptured(curr)));
+            log.debug(String.format(" Parameter Set %d: Current: %s, Captures: %d", i, Arrays.toString(curr), inventory.numberMoleculesCaptured(curr)));
         }
     }
 
