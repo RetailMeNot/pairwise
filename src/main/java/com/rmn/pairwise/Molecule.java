@@ -1,5 +1,7 @@
 package com.rmn.pairwise;
 
+import java.util.Arrays;
+
 /**
  * Represents a single "molecule" of data. Not a test set, not a parameter set, but the smallest "piece" of the scenario you want to test. It 
  * is analagous to a "pair" in the pairwise terminology, but I didn't want to be limited to 2 "atoms". Also note that a molecule doesn't
@@ -51,13 +53,18 @@ public class Molecule {
 
         Molecule that = (Molecule) o;
 
-        if (atoms != null ? !atoms.equals(that.getAtoms()) : that.getAtoms() != null) return false;
+        if (atoms != null ? !Arrays.equals(atoms, that.getAtoms()) : that.getAtoms() != null) return false;
 
         return true;
     }
 
     @Override
     public int hashCode() {
-        return atoms != null ? atoms.hashCode() : 0;
+        return atoms != null ? Arrays.hashCode(atoms) : 0;
+    }
+
+    @Override
+    public String toString() {
+        return Arrays.toString(getAtoms());
     }
 }

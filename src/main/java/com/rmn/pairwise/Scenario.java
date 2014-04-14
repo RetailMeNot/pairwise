@@ -88,7 +88,7 @@ public class Scenario {
         int k = 0; //The index of the parameter set attached to this value
         for ( int i = 0; i < this.getLegalValues().length; ++i ) {
             int[] curr = this.getLegalValues()[i];
-            for (int j = 0; j < curr.length; ++j) {
+            for (int aCurr : curr) {
                 parameterPositions[k++] = i;
             }
         }

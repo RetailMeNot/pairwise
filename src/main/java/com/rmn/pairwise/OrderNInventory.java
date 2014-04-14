@@ -330,7 +330,7 @@ public class OrderNInventory implements IInventory {
         for (int unusedMoleculeIndex = 0; unusedMoleculeIndex < this.getUnusedMolecules().size(); unusedMoleculeIndex++) {
             int[] curr = this.getUnusedMolecules().get( unusedMoleculeIndex ).getAtoms();
             int weight = this.getUnusedParameterIndexCounts()[ curr[0] ] + this.getUnusedParameterIndexCounts()[ curr[1] ];
-            log.debug(String.format("Pair %d: [%s,%s], Weight: %2d", unusedMoleculeIndex, scenario.getParameterValues().get(curr[0]), scenario.getParameterValues().get (curr[1]), weight));
+            log.debug(String.format("Best Molecule %d: [%s,%s], Weight: %2d", unusedMoleculeIndex, scenario.getParameterValues().get(curr[0]), scenario.getParameterValues().get (curr[1]), weight));
             
             //If the new pair is weighted more highly than the previous, make it the new "best"
             if (weight > bestWeight) {
@@ -341,7 +341,7 @@ public class OrderNInventory implements IInventory {
          
         //log and return the best pair
         int[] best = this.getUnusedMolecules().get( indexOfBestMolecule ).getAtoms();
-        log.debug(String.format("Best pair is [%s, %s] at %d with weight %d", scenario.getParameterValues().get(best[0]), scenario.getParameterValues().get(best[1]), indexOfBestMolecule, bestWeight));
+        log.debug(String.format("Best molecule is [%s, %s] at %d with weight %d", scenario.getParameterValues().get(best[0]), scenario.getParameterValues().get(best[1]), indexOfBestMolecule, bestWeight));
         return best;
     }
 
@@ -372,7 +372,7 @@ public class OrderNInventory implements IInventory {
         log.debug("All Molecules:");
         int moleculeCount = 0;
         for (Molecule molecule: allMolecules) {
-            log.debug(String.format("%03d: %s", moleculeCount, Arrays.toString(molecule.getAtoms())));
+            log.debug(String.format("Molecule %03d: %s", moleculeCount, Arrays.toString(molecule.getAtoms())));
             moleculeCount++;
         }
     }
@@ -384,8 +384,8 @@ public class OrderNInventory implements IInventory {
        for (Molecule molecule: unusedMolecules) {
            if (null != molecule) {
                int[] curr = molecule.getAtoms();
-               unusedPairsStr += molecule + ",";
-               log.debug(String.format( "%03d: %2d,  %2d", moleculeCount, curr[0], curr[1]));
+               unusedPairsStr += molecule.toString() + ",";
+               log.debug(String.format( "Unused Molecule %03d: %2d,  %2d", moleculeCount, curr[0], curr[1]));
            }
            moleculeCount++;
        }

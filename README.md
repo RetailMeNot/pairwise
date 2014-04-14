@@ -1,6 +1,13 @@
 pairwise
 ========
 
+Pairwise is an open-source library for the generation of data sets, most commonly used for testing. A complete discussion of the ideas and algorithms is available from http://www.pairwise.org/.
+
+Simply put, this library takes an "input space", then combines and reduces the data set down from "all possible permutations" to a set that will guarantee "pairwise permutations". Put another way,
+ this algorithm will guarantee not that every possible input was tested with all possible other inputs, but that every possible input was tested with all other *single* inputs. The initial
+ input space is analyzed and broken down into a series of all possible "pairs" of inputs, and these pairs are then combined to produce the smallest number of data sets that can be iterated over in
+ order to guarantee this "pairwise" coverage.
+
 ```java
 private static final String NAV_SCENARIO =
         "Browser: Chrome, Firefox, InternetExplorer"
