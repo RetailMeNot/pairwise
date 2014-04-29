@@ -30,12 +30,11 @@ public class TestCaseGeneratorTests {
             "Param6: u, v, w\n" +
             "Param7: x, y";
 
-    private static final String OUTCLICK_PARAMETER_SET = 
+    private static final String USER_PARAMETER_SET =
             "Browser: Chrome, Firefox, IE, Safari\n" +
-            "Page Type: Home, Store, Landing, Landing2, Search Results, Printables, Deals, Community, 404, Category, Offer-Level\n" +
-            "Coupon Type: Code, Sale, Printable (printableImagePath), Printable (affiliateLink), Printable (printableImagePath & affiliateLink)\n" +
-            "Coupon Presentation: Normal, Suggested, Coupon featured on a page with a #cid.<offerid> hash, Modal, Conquested\n" +
-            "Click Type: CTR, CTC\n";
+            "Page Type: Home, Store, Landing, Search Results, Community, 404, Category\n" +
+            "Login Type: Organic, Direct, EmailGenerated\n" +
+            "User Type: Administrator, User, Operations\n";
 
     @Test
     public void testGetBestPair() {
@@ -99,7 +98,7 @@ public class TestCaseGeneratorTests {
 
     @Test
     public void testBuildOutclickTestSets() {
-        IInventory inventory = PairwiseInventoryFactory.generateParameterInventory(OUTCLICK_PARAMETER_SET);
+        IInventory inventory = PairwiseInventoryFactory.generateParameterInventory(USER_PARAMETER_SET);
         TestDataSet dataSet = inventory.getTestDataSet();
         List<int[]> testSets = dataSet.getRawTestSets();
 
