@@ -14,6 +14,31 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
+    <licenses>
+        <license>
+            <name>The MIT License (MIT)</name>
+            <url>http://opensource.org/licenses/MIT</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+
+
+    <developers>
+        <developer>
+            <name>Marcus Merrell</name>
+            <email>mmerrell@rmn.com</email>
+            <organization>RetailMeNot, inc</organization>
+            <organizationUrl>https://github.com/mmerrell</organizationUrl>
+        </developer>
+    </developers>
+
+    <scm>
+        <connection>scm:git:git@github.com:RetailMeNot/pairwise.git</connection>
+        <url>scm:git:git@github.com:RetailMeNot/pairwise.git</url>
+        <developerConnection>scm:git:git@github.com:RetailMeNot/pairwise.git</developerConnection>
+        <tag>pairwise-1.0.0</tag>
+    </scm>
+
     <build>
         <plugins>
             <plugin>
@@ -62,6 +87,7 @@
             </plugin>
         </plugins>
     </build>
+
     <dependencies>
         <dependency>
             <groupId>org.apache.commons</groupId>
@@ -86,11 +112,4 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
-
-    <scm>
-        <connection>scm:git:git@github.com:RetailMeNot/pairwise.git</connection>
-        <url>scm:git:git@github.com:RetailMeNot/pairwise.git</url>
-        <developerConnection>scm:git:git@github.com:RetailMeNot/pairwise.git</developerConnection>
-        <tag>pairwise-1.0.0</tag>
-    </scm>
 </project>
