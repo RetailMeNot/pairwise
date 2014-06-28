@@ -5,7 +5,6 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -39,58 +38,58 @@ public class TestCaseGeneratorTests {
 
     @Test
     public void testGetBestPair() {
-        IInventory inventory = PairwiseInventoryFactory.generateParameterInventory(PARAMETER_SET);
-        int[] firstBestPair = inventory.getBestMolecule();
+        Inventory inventory = PairwiseInventoryFactory.generateParameterInventory(PARAMETER_SET);
+        List<Integer> firstBestPair = inventory.getBestMolecule();
             
         //The first time around, it should be 0,9
-        Assert.assertEquals(0, firstBestPair[0]);
-        Assert.assertEquals(9, firstBestPair[1]);
-        Assert.assertEquals("j", inventory.getScenario().getParameterValues().get(firstBestPair[1]));
+        Assert.assertEquals(Integer.valueOf(0), firstBestPair.get(0));
+        Assert.assertEquals(Integer.valueOf(9), firstBestPair.get(1));
+        Assert.assertEquals("j", inventory.getScenario().getParameterValues().get(firstBestPair.get(1)));
     }
 
     @Test
     public void testGetParameterOrdering() {
-        IInventory inventory = PairwiseInventoryFactory.generateParameterInventory(PARAMETER_SET);
-        int[] bestPair = inventory.getBestMolecule();
+        Inventory inventory = PairwiseInventoryFactory.generateParameterInventory(PARAMETER_SET);
+        List<Integer> bestPair = inventory.getBestMolecule();
             
         TestDataSet dataSet = new TestDataSet(inventory, inventory.getScenario());
-        int[] ordering = dataSet.getParameterOrdering(inventory.getScenario().getParameterPositions()[ bestPair[0] ], inventory.getScenario().getParameterPositions()[ bestPair[1] ]);
-        Assert.assertEquals(0, ordering[0]);
-        Assert.assertEquals(3, ordering[1]);
+        List<Integer> ordering = dataSet.getParameterOrdering(inventory.getScenario().getParameterPositions().get(bestPair.get(0)), inventory.getScenario().getParameterPositions().get(bestPair.get(1)));
+        Assert.assertEquals(Integer.valueOf(0), ordering.get(0));
+        Assert.assertEquals(Integer.valueOf(3), ordering.get(1));
     }
 
     @Test
     public void testBuildTestSets() {
-        IInventory inventory = PairwiseInventoryFactory.generateParameterInventory(PARAMETER_SET);
+        Inventory inventory = PairwiseInventoryFactory.generateParameterInventory(PARAMETER_SET);
         TestDataSet dataSet = inventory.getTestDataSet();
         dataSet.logResults();
         
-        List<int[]> testSets = dataSet.getRawTestSets();
-        Iterator<int[]> iter = testSets.iterator();
+        List<List<Integer>> testSets = dataSet.getRawTestSets();
+        Iterator<List<Integer>> iter = testSets.iterator();
         
         int count = 0;
         while (iter.hasNext()) {
-            log.info("Test Set: {}: {}", count++, Arrays.toString(iter.next()));
+            log.info("Test Set: {}: {}", count++, iter.next().toString());
         }
     }
 
     @Test
     public void testBuildTinyTestSets() {
-        IInventory inventory = PairwiseInventoryFactory.generateParameterInventory(TWO_X_THREE_SET);
+        Inventory inventory = PairwiseInventoryFactory.generateParameterInventory(TWO_X_THREE_SET);
         TestDataSet dataSet = inventory.getTestDataSet();
         dataSet.logResults();
     }
 
     @Test
     public void testBuild3x3TestSets() {
-        IInventory inventory = PairwiseInventoryFactory.generateParameterInventory(THREE_X_THREE_SET);
+        Inventory inventory = PairwiseInventoryFactory.generateParameterInventory(THREE_X_THREE_SET);
         TestDataSet dataSet = inventory.getTestDataSet();
         dataSet.logResults();
     }
 
     @Test
     public void testBuildBigTestSets() {
-        IInventory inventory = PairwiseInventoryFactory.generateParameterInventory(BIG_PARAMETER_SET);
+        Inventory inventory = PairwiseInventoryFactory.generateParameterInventory(BIG_PARAMETER_SET);
         TestDataSet dataSet = inventory.getTestDataSet();
         dataSet.logResults();
         
@@ -99,9 +98,9 @@ public class TestCaseGeneratorTests {
 
     @Test
     public void testBuildOutclickTestSets() {
-        IInventory inventory = PairwiseInventoryFactory.generateParameterInventory(USER_PARAMETER_SET);
+        Inventory inventory = PairwiseInventoryFactory.generateParameterInventory(USER_PARAMETER_SET);
         TestDataSet dataSet = inventory.getTestDataSet();
-        List<int[]> testSets = dataSet.getRawTestSets();
+        List<List<Integer>> testSets = dataSet.getRawTestSets();
 
         String parameterHeadings = "";
         for (int parameterIndex = 0; parameterIndex < inventory.getScenario().getParameterSetCount(); parameterIndex++) {
@@ -109,10 +108,10 @@ public class TestCaseGeneratorTests {
         }
         log.info(parameterHeadings);
 
-        for (int[] testSet : testSets) {
+        for (List<Integer> testSet : testSets) {
             String outputStr = "";
             for (int j = 0; j < inventory.getScenario().getParameterSetCount(); j++) {
-                outputStr += inventory.getScenario().getParameterValues().get(testSet[j]) + "\t";
+                outputStr += inventory.getScenario().getParameterValues().get(testSet.get(j)) + "\t";
             }
             log.info(outputStr);
         }
@@ -128,7 +127,7 @@ public class TestCaseGeneratorTests {
                 ;
 
         //First, generate the list of vectors we *want*
-        IInventory inventory = PairwiseInventoryFactory.generateParameterInventory(NAV_SCENARIO);
+        Inventory inventory = PairwiseInventoryFactory.generateParameterInventory(NAV_SCENARIO);
         List<Map<String, String>> rawDataSet = inventory.getTestDataSet().getTestSets();
 
         //Now, go through the vectors in the database to figure out what we already *have*

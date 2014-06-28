@@ -33,15 +33,15 @@ public class PairwiseInventoryFactory {
      * @param contents The contents of the Scenario you're testing
      * @return the Scenario
      */
-    public static IInventory generateParameterInventory(String contents) {
-        IInventory inventory = new PairwiseInventory();
+    public static Inventory generateParameterInventory(String contents) {
+        Inventory inventory = new PairwiseInventory();
         Scenario scenario = generateScenario(contents);
         inventory.setScenario(scenario);
         inventory.buildMolecules();
         return inventory;
     }
 
-    public static IInventory generateParameterInventory(InputStream stream) throws IOException {
+    public static Inventory generateParameterInventory(InputStream stream) throws IOException {
         InputStreamReader isr = new InputStreamReader(stream);
         BufferedReader br = new BufferedReader(isr);
    
@@ -51,7 +51,7 @@ public class PairwiseInventoryFactory {
             scenario.addParameterSet(processOneLine(line));
         }
         
-        IInventory inventory = new PairwiseInventory();
+        Inventory inventory = new PairwiseInventory();
         inventory.setScenario(scenario);
         inventory.buildMolecules();
         return inventory;

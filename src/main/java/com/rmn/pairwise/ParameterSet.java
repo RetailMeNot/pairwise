@@ -25,8 +25,4 @@ public class ParameterSet<T> {
     public T getValue(int index) {
         return parameterValues.get(index);
     }
-
-    public int getCount() {
-        return parameterValues.size();
-    }
 }

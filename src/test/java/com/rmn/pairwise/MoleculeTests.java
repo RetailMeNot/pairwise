@@ -3,11 +3,13 @@ package com.rmn.pairwise;
 import org.junit.Assert;
 import org.junit.Test;
 
-public class MoleculeTests {
+import java.util.Arrays;
+import java.util.List;
 
+public class MoleculeTests {
     @Test
     public void testEquals() {
-        int[] intArray = new int[] { 0, 1 };
+        List<Integer> intArray = Arrays.asList(0, 1);
         Molecule molecule1 = new Molecule(intArray);
         Molecule molecule2 = new Molecule(intArray);
         
@@ -16,16 +18,16 @@ public class MoleculeTests {
 
     @Test
     public void testDoesNotEqual() {
-        int[] intArray = new int[] { 0, 1 };
+        List<Integer> intArray = Arrays.asList(0, 1);
         Molecule molecule1 = new Molecule(intArray);
-        Molecule molecule2 = new Molecule(new int[] { 1, 0 });
+        Molecule molecule2 = new Molecule(Arrays.asList(1, 0));
         
         Assert.assertFalse("The two test molecules, set to reference different int arrays (with the same values) shoud not be equal", molecule1.equals(molecule2));
     }
 
     @Test
     public void testAtomsPerMolecule() {
-        Molecule molecule = new Molecule(new int[] { 0, 1, 2, 3, 4, 5, 6 });
+        Molecule molecule = new Molecule(Arrays.asList(0, 1, 2, 3, 4, 5, 6));
         
         Assert.assertEquals("There should be 7 atoms in this molecule", 7, molecule.getAtomsPerMolecule());
     }
@@ -42,21 +44,21 @@ public class MoleculeTests {
         Molecule molecule = new Molecule(7);
         Assert.assertEquals(7, molecule.getAtomsPerMolecule());
         
-        molecule.setAtoms(new int[] { 0, 1, 2 });
+        molecule.setAtoms(Arrays.asList(0, 1, 2));
         Assert.assertEquals(3, molecule.getAtomsPerMolecule());
     }
 
     @Test
     public void testDoesNotEqualFirstNull() {
         Molecule molecule1 = new Molecule(null);
-        Molecule molecule2 = new Molecule(new int[] { 1, 0 });
+        Molecule molecule2 = new Molecule(Arrays.asList(1, 0));
         
         Assert.assertFalse(molecule1.equals(molecule2));
     }
 
     @Test
     public void testDoesNotEqualSecondNull() {
-        Molecule molecule1 = new Molecule(new int[] { 1, 0 });
+        Molecule molecule1 = new Molecule(Arrays.asList(1, 0));
         Molecule molecule2 = new Molecule(null);
         
         Assert.assertFalse(molecule1.equals(molecule2));

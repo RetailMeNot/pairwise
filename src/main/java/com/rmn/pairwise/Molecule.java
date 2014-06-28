@@ -1,6 +1,6 @@
 package com.rmn.pairwise;
 
-import java.util.Arrays;
+import java.util.List;
 
 /**
  * Represents a single "molecule" of data. Not a test set, not a parameter set, but the smallest "piece" of the scenario you want to test. It 
@@ -13,7 +13,7 @@ public class Molecule {
      * Initializes a new Molecule, which has an array of indexes to the "larger" scenario
      * @param atoms
      */
-    public Molecule(int[] atoms) {
+    public Molecule(List<Integer> atoms) {
         this.setAtoms(atoms);
     }
 
@@ -29,22 +29,14 @@ public class Molecule {
     public int getAtomsPerMolecule() { return atomsPerMolecule; }
     public void setAtomsPerMolecule(int atomsPerMolecule) { this.atomsPerMolecule = atomsPerMolecule; }
 
-    private int[] atoms;
-    public int[] getAtoms() { return atoms; }
-    public void setAtoms(int[] atoms) {
+    private List<Integer> atoms;
+    public List<Integer> getAtoms() { return atoms; }
+    public void setAtoms(List<Integer> atoms) {
         this.atoms = atoms;
         if (null != atoms) {
-            this.setAtomsPerMolecule(atoms.length);
+            this.setAtomsPerMolecule(atoms.size());
         }
     }
-    
-    private boolean used = false;
-    public boolean isUsed() { return used; }
-    public void setUsed(boolean used) { this.used = used; }
-    
-    private boolean illegal = false;
-    public boolean isIllegal() { return illegal; }
-    public void setIllegal(boolean illegal) { this.illegal = illegal; }
     
     @Override
     public boolean equals(Object o) {
@@ -53,18 +45,17 @@ public class Molecule {
 
         Molecule that = (Molecule) o;
 
-        if (atoms != null ? !Arrays.equals(atoms, that.getAtoms()) : that.getAtoms() != null) return false;
+        return atoms != null ? atoms.equals(that.getAtoms()) : that.getAtoms() != null;
 
-        return true;
     }
 
     @Override
     public int hashCode() {
-        return atoms != null ? Arrays.hashCode(atoms) : 0;
+        return atoms != null ? atoms.hashCode() : 0;
     }
 
     @Override
     public String toString() {
-        return Arrays.toString(getAtoms());
+        return getAtoms().toString();
     }
 }

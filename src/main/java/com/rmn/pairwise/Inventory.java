@@ -2,7 +2,7 @@ package com.rmn.pairwise;
 
 import java.util.List;
 
-public interface IInventory {
+public interface Inventory {
     /**
      * Returns the entire set of Test Cases this inventory has produced, by running through "the algorithm" after all the Parameter Sets
      * have been added
@@ -17,19 +17,19 @@ public interface IInventory {
      * @param testSet
      * @return
      */
-    int numberMoleculesCaptured(int[] testSet);
+    int numberMoleculesCaptured(List<Integer> testSet);
 
     /**
      * Pick "best" unused molecule -- the pair with the highest number of unused values
      * @return
      */
-    int[] getBestMolecule();
+    List<Integer> getBestMolecule();
 
     /**
      *
      * @param bestTestSet
      */
-    void updateAllCounts(int[] bestTestSet);
+    void updateAllCounts(List<Integer> bestTestSet);
 
     /**
      * Process the "used" sets to determine which sets have not been used yet
@@ -41,15 +41,9 @@ public interface IInventory {
      */
     void buildMolecules();
 
-    int[][] getUnusedMoleculesSearch();
+    List<List<Integer>> getUnusedMoleculesSearch();
 
     List<Molecule> getUnusedMolecules();
-
-    /**
-     * Determine the number of pairs for this input set
-     * @return
-     */
-    int initMoleculeCount();
 
     int getMoleculeCount();
 
@@ -64,6 +58,4 @@ public interface IInventory {
     public abstract void setScenario(Scenario scenario);
 
     Scenario getScenario();
-
-    void setAtomsPerMolecule(int atoms);
 }

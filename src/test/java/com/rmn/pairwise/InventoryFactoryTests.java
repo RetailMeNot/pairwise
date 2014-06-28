@@ -14,15 +14,6 @@ public class InventoryFactoryTests {
             "Param2: g, h, i\n" +
             "Param3: j, k";
 
-    static final String BIG_PARAMETER_SET =
-            "Param0: a, b\n" +
-            "Param1: c, d, e, f\n" +
-            "Param2: g, h, i\n" +
-            "Param3: j, k, l, m, n\n" +
-            "Param4: o, p\n" +
-            "Param5: q, r, s\n" +
-            "Param6: t, u, v, w, x, y, z\n";
-
     @Test
     public void testValidateParameterSet() {
         Scenario scenario = PairwiseInventoryFactory.generateScenario(PARAMETER_SET);
@@ -48,21 +39,21 @@ public class InventoryFactoryTests {
         Scenario scenario = PairwiseInventoryFactory.generateScenario(TWO_X_THREE_SET);
         scenario.logParameterValues();
 
-        Assert.assertEquals(2, scenario.getLegalValues().length);
-        Assert.assertEquals(2, scenario.getLegalValues()[0].length);
-        Assert.assertEquals(3, scenario.getLegalValues()[1].length);
+        Assert.assertEquals(2, scenario.getLegalValues().size());
+        Assert.assertEquals(2, scenario.getLegalValues().get(0).size());
+        Assert.assertEquals(3, scenario.getLegalValues().get(1).size());
         Assert.assertEquals("j", scenario.getParameterSet(1).getValue(1));
     }
 
     @Test
     public void testStreamParsingFactory() throws IOException {
         FileInputStream stream = new FileInputStream("src/test/resources/Tiny Test Set.txt");
-        IInventory scenario = PairwiseInventoryFactory.generateParameterInventory(stream);
+        Inventory scenario = PairwiseInventoryFactory.generateParameterInventory(stream);
         scenario.getScenario().logParameterValues();
 
-        Assert.assertEquals(2, scenario.getScenario().getLegalValues().length);
-        Assert.assertEquals(2, scenario.getScenario().getLegalValues()[0].length);
-        Assert.assertEquals(3, scenario.getScenario().getLegalValues()[1].length);
+        Assert.assertEquals(2, scenario.getScenario().getLegalValues().size());
+        Assert.assertEquals(2, scenario.getScenario().getLegalValues().get(0).size());
+        Assert.assertEquals(3, scenario.getScenario().getLegalValues().get(1).size());
         Assert.assertEquals("j", scenario.getScenario().getParameterSet(1).getValue(1));
     }
 }
