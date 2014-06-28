@@ -15,12 +15,8 @@ public class Scenario {
         return getParameterSets().get(index);
     }
 
-    private IModelConstraint modelConstraints;
-    public IModelConstraint getModelConstraints() { return modelConstraints; }
-    public void setModelConstraints(IModelConstraint modelConstraints) { this.modelConstraints = modelConstraints; }
-
     private int[][] legalValues;
-    
+
     /**
      * An array of arrays representing the parameter set (x), and the index of the flattened-out "parameterValues" array (y).
      * See documentation at the top of the PairwiseInventory class for details

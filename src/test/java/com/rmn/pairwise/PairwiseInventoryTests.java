@@ -99,32 +99,4 @@ public class PairwiseInventoryTests {
 
         Assert.assertEquals("The pair count should be 6", 6, inventory.getMoleculeCount());
     }
-
-    @Test
-    public void testOrderNInventory4Atoms() {
-        IInventory inventory = new OrderNInventory();
-        Scenario scenario = new Scenario();
-        for (String line: StringUtils.split(InventoryFactoryTests.BIG_PARAMETER_SET, System.getProperty("line.separator"))) {
-            scenario.addParameterSet(PairwiseInventoryFactory.processOneLine(line));
-        }
-        inventory.setScenario(scenario);
-        inventory.setAtomsPerMolecule(4);
-
-        int moleculeSetCount = inventory.initMoleculeCount();
-        Assert.assertEquals("With the Big Parameter set and an atom size of 4, there should be 420 molecule sets", 420, moleculeSetCount);
-    }
-
-    @Test
-    public void testOrderNInventory3Atoms() {
-        IInventory inventory = new OrderNInventory();
-        Scenario scenario = new Scenario();
-        for (String line: StringUtils.split(InventoryFactoryTests.BIG_PARAMETER_SET, System.getProperty("line.separator"))) {
-            scenario.addParameterSet(PairwiseInventoryFactory.processOneLine(line));
-        }
-        inventory.setScenario(scenario);
-        inventory.setAtomsPerMolecule(3);
-
-        int moleculeSetCount = inventory.initMoleculeCount();
-        Assert.assertEquals("With the Big Parameter set and an atom size of 3, there should be 420 molecule sets", 105, moleculeSetCount);
-    }
 }
