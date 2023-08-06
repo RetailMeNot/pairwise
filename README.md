@@ -56,7 +56,7 @@ Imagine a shopping web site, where you want to verify that the various methods o
 result in the proper check-out procedure. You want to make sure all supported browsers work, and that you have a representative
 set of products
 
-```
+```java
 private static final String NAV_SCENARIO =
         "Browser: Chrome, Firefox, InternetExplorer, Safari"
      + "\nPage: Home, Category, Search, New Products"
